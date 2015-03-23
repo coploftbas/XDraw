@@ -34,7 +34,12 @@ public class Drawing extends View {
         }
     }
 
+    /**
+     * adding the rectangle to the list of rectangle
+     * @param rectangle
+     */
     public void add(Rectangle rectangle) {
+
         list.add(rectangle);
     }
 
