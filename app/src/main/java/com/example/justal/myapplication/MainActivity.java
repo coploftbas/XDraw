@@ -1,7 +1,9 @@
 package com.example.justal.myapplication;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -20,14 +23,19 @@ import java.util.List;
 
 public class MainActivity extends Activity {
     private float x1=0,x2=0,y1=0,y2=0,tmp=0;
-    private List<Drawing> list=new ArrayList<Drawing>();
-    private boolean drawing=false;
+    private Drawing drawing;
+    private LinearLayout ll;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = getLayoutInflater().inflate(R.layout.activity_main, null, false);
-        LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
+        view = getLayoutInflater().inflate(R.layout.activity_main, null, false);
+        ll = (LinearLayout) view.findViewById(R.id.ll);
+
+        drawing = new Drawing(this);
+        drawing.add(new Rectangle(0, 0, 200, 350));
+        ll.addView(drawing);
         setContentView(view);
     }
 
@@ -55,47 +63,25 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Window win = getWindow();
+        int contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1=event.getX();
                 y1=event.getY();
-                drawing=true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if(drawing) {
-                    x2 = event.getX();
-                    y2 = event.getY();
-                    if (x1 > x2) {
-                        tmp = x1;
-                        x1 = x2;
-                        x2 = tmp;
-                    }
-                    if (y1 < y2) {
-                        tmp = y1;
-                        y1 = y2;
-                        y2 = tmp;
-                    }
-                        View view = getLayoutInflater().inflate(R.layout.activity_main, null, false);
-                        LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
-                        Drawing tmpDrawing = new Drawing(this, x1, x2, y1, y2);
-                        this.list.add(tmpDrawing);
-                        ll.addView(tmpDrawing);
-                        setContentView(view);
-                }
-                drawing=false;
+                 x2=event.getX();
+                 y2=event.getY();
+                 if(!drawing.testInside(x1,y1- contentViewTop) && !drawing.testInside(x2,y2- contentViewTop)) {
+                     drawing.add(new Rectangle(x1, y1 - contentViewTop, x2, y2 - contentViewTop));
+                     setContentView(view);
+                 }
                 break;
+
         }
         return true;
-    }
-
-    public boolean inside(float x,float y) {
-        for(int i=0;i<list.size();i++) {
-            if(x>x1 && x<x2 && y>y2 && y<y1) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -6,22 +6,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Justal on 22/03/2015.
  */
 public class Drawing extends View {
-    private float x1;
-    private float x2;
-    private float y1;
-    private float y2;
+    List<Rectangle> list = new ArrayList<Rectangle>();
 
-    public Drawing(Context context,float x1,float x2,float y1,float y2)
+    public Drawing(Context context)
     {
         super(context);
-        this.x1=x1;
-        this.x2=x2;
-        this.y1=y1;
-        this.y2=y2;
     }
 
     @Override
@@ -33,22 +29,21 @@ public class Drawing extends View {
         paint.setColor(Color.WHITE);
         canvas.drawPaint(paint);
         paint.setColor(Color.parseColor("#CD5C5C"));
-        canvas.drawRect(this.x1, this.y2, this.x2, this.y1, paint);
+        for(int i=0;i<list.size();i++) {
+            canvas.drawRect(list.get(i).getX1(), list.get(i).getY1(), list.get(i).getX2(), list.get(i).getY2(), paint);
+        }
     }
 
-    public float getX1() {
-        return x1;
+    public void add(Rectangle rectangle) {
+        list.add(rectangle);
     }
 
-    public float getX2() {
-        return x2;
-    }
-
-    public float getY1() {
-        return y1;
-    }
-
-    public float getY2() {
-        return y2;
+    public boolean testInside(float x,float y) {
+        for(int i=0;i<list.size();i++) {
+            if(list.get(i).inside(x,y)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
