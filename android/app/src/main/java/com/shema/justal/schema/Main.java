@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -190,6 +191,9 @@ public class Main extends Activity implements Constants {
         return false;
     }
 
+    public void createRectangle(View view) {
+        // TODO Fill this function
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -6,10 +6,21 @@
     tools:context=".Main"
     tools:ignore="MergeRootFrame">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/framelayout" >
-    </FrameLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
+        <Button
+            android:layout_height="@dimen/button_create_rectangle"
+            android:layout_width="fill_parent"
+            android:text="@string/button_name"
+            android:onClick="createRectangle" />
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/framelayout" >
+        </FrameLayout>
+    </LinearLayout>
 </FrameLayout>
