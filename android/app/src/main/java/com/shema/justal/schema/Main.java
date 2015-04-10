@@ -52,11 +52,11 @@ public class Main extends ActionBarActivity implements Constants {
         Window win = getWindow();
         contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();
         mx = event.getX();
-        my = event.getY()-contentViewTop;
+        my = event.getY()-contentViewTop-40;
 
         if(!drawingMode && !movingMode) {
             if(!inside(mx,my)) {
-                Toast.makeText(Main.this, "alert", Toast.LENGTH_LONG).show();
+               // Toast.makeText(Main.this, "alert", Toast.LENGTH_LONG).show();
                 drawingMode=true;
             } else {
                 movingMode=true;
@@ -68,9 +68,11 @@ public class Main extends ActionBarActivity implements Constants {
         }
         else if(movingMode) {
             onTouchEventMoveRectangle(event);
-        } else {
+        }
+        else{
             throw new IllegalArgumentException("Impossible");
         }
+
         return true;
     }
 
@@ -188,9 +190,16 @@ public class Main extends ActionBarActivity implements Constants {
     }
 
     public void createRectangle(View view) {
+<<<<<<< HEAD
         // TODO Fill this function
 //        frame.invalidate();
 
+=======
+        Rectangle tmp = new Rectangle(this, 0, 0, SIZE_MAX_X_RECTANGLE, SIZE_MAX_Y_RECTANGLE);
+        listRectangle.add(tmp);
+        frame.addView(tmp, idFrame);
+        idFrame++;
+>>>>>>> 5936f383a655e4230ae1e31ed351091fd27fc827
     }
 
     @Override
