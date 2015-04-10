@@ -1,22 +1,15 @@
 package com.shema.justal.schema;
 
-import android.app.Activity;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +19,7 @@ import java.util.List;
  * Taking all the frame and putting on !
  * @author Justal Kevin
  */
-public class Main extends Activity implements Constants {
+public class Main extends ActionBarActivity implements Constants {
     private FrameLayout frame;
     private List<Rectangle> listRectangle= new ArrayList<Rectangle>();
     private static int idFrame=0;
@@ -63,6 +56,7 @@ public class Main extends Activity implements Constants {
 
         if(!drawingMode && !movingMode) {
             if(!inside(mx,my)) {
+                Toast.makeText(Main.this, "alert", Toast.LENGTH_LONG).show();
                 drawingMode=true;
             } else {
                 movingMode=true;
@@ -71,7 +65,8 @@ public class Main extends Activity implements Constants {
 
         if(drawingMode) {
             onTouchEventRectangle(event);
-        } else if(movingMode) {
+        }
+        else if(movingMode) {
             onTouchEventMoveRectangle(event);
         } else {
             throw new IllegalArgumentException("Impossible");
@@ -164,6 +159,7 @@ public class Main extends Activity implements Constants {
      * Drawing a simple rectangle if this one follow some principle
      */
     private void drawRectangle(){
+        Log.d("Draw", "!!!");
         float right = mStartX > mx ? mStartX : mx;
         float left = mStartX > mx ? mx : mStartX;
         float bottom = mStartY > my ? mStartY : my;
@@ -193,6 +189,8 @@ public class Main extends Activity implements Constants {
 
     public void createRectangle(View view) {
         // TODO Fill this function
+//        frame.invalidate();
+
     }
 
     @Override
@@ -210,7 +208,10 @@ public class Main extends Activity implements Constants {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_rectangle) {
+            //Log.d("Menu clicked", "!!!!!");
+//            drawRectangle();
+            drawingMode = true;
             return true;
         }
 

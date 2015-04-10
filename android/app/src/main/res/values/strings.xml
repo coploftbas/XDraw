@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Schema</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!--<string name="action_settings">Settings</string>-->
     <string name="button_name">CREATE RECTANGLE</string>
+    <string name="action_rectangle">Rectangle</string>
 </resources>

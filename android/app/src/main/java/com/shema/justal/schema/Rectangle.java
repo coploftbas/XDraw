@@ -1,12 +1,9 @@
 package com.shema.justal.schema;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -38,9 +35,12 @@ public class Rectangle extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
+        Log.d("Canvas", "!!!!");
         Paint mPaintFinal = new Paint(Paint.DITHER_FLAG);
         mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
         canvas.drawRect(left, top , right, bottom, mPaintFinal);
+
+
     }
 
     /**
