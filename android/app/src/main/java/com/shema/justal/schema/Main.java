@@ -59,22 +59,10 @@ public class Main extends Activity implements Constants {
         Window win = getWindow();
         contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();
         mx = event.getX();
-        my = event.getY()-contentViewTop;
+        my = event.getY()-contentViewTop-40;
 
-        if(!drawingMode && !movingMode) {
-            if(!inside(mx,my)) {
-                drawingMode=true;
-            } else {
-                movingMode=true;
-            }
-        }
-
-        if(drawingMode) {
-            onTouchEventRectangle(event);
-        } else if(movingMode) {
+        if(inside(mx,my)) {
             onTouchEventMoveRectangle(event);
-        } else {
-            throw new IllegalArgumentException("Impossible");
         }
         return true;
     }
@@ -192,7 +180,10 @@ public class Main extends Activity implements Constants {
     }
 
     public void createRectangle(View view) {
-        // TODO Fill this function
+        Rectangle tmp = new Rectangle(this, 0, 0, SIZE_MAX_X_RECTANGLE, SIZE_MAX_Y_RECTANGLE);
+        listRectangle.add(tmp);
+        frame.addView(tmp, idFrame);
+        idFrame++;
     }
 
     @Override
