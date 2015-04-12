@@ -2,12 +2,12 @@ package com.shema.justal.schema;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,8 @@ public class Main extends ActionBarActivity implements Constants {
     private float mx;
     private float my;
 
+    private String currentColor;
+
     private boolean drawingMode = false;
     private boolean movingMode = false;
 
@@ -43,8 +45,12 @@ public class Main extends ActionBarActivity implements Constants {
         setContentView(R.layout.activity_main);
         frame = (FrameLayout) findViewById(R.id.framelayout);
 
+        //Log.d("Create","O");
+
     }
 
+
+    Rectangle rectangle;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Calculate the fucking size of the bar - There is certainly a way for passing this
@@ -53,39 +59,85 @@ public class Main extends ActionBarActivity implements Constants {
         mx = event.getX();
         my = event.getY() - contentViewTop - 40;
 
-        if (!drawingMode && !movingMode) {
+        /*if (!drawingMode && !movingMode) {
             if (!inside(mx, my)) {
-                // Toast.makeText(Main.this, "alert", Toast.LENGTH_LONG).show();
+                Toast.makeText(Main.this, "inside", Toast.LENGTH_LONG).show();
                 drawingMode = true;
             } else {
                 movingMode = true;
             }
+        }*/
+
+        /*if (drawingMode) {
+            onTouchEventRectangle(event);
+        } else*/
+
+        if (inside(mx, my)) {
+           // Toast.makeText(Main.this, "inside", Toast.LENGTH_LONG).show();
+            Log.d("Tourh Event","inside");
+
+            //rectangle = new Rectangle(this);
+
+            onTouchEventChangeColor(event);
+            movingMode = true;
         }
 
-        if (drawingMode) {
-            onTouchEventRectangle(event);
-        } else if (movingMode) {
-            onTouchEventMoveRectangle(event);
+        if (movingMode) {
+          onTouchEventMoveRectangle(event);
+           // Log.d("Touch event", "Moving");
         } else {
-            throw new IllegalArgumentException("Impossible");
+           // Toast.makeText(Main.this, "else", Toast.LENGTH_LONG).show();
+            Log.d("Touch Event","else");
+
+//            throw new IllegalArgumentException("Impossible");
         }
 
         return true;
     }
 
-    private void onTouchEventRectangle(MotionEvent event) {
+//    private void onTouchEventRectangle(MotionEvent event) {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                mStartX = mx;
+//                mStartY = my;
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                break;
+//            case MotionEvent.ACTION_UP:
+////                drawRectangle();//comment by sanin
+//                drawingMode = false;
+//                break;
+//        }
+//    }
+
+    private void onTouchEventChangeColor(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mStartX = mx;
-                mStartY = my;
+                // Position
+                tmpX = event.getX();
+                tmpY = event.getY() - contentViewTop;
+
+                // LayoutParam
+                index = -1;
+                for (int i = 0; i < listRectangle.size(); i++) {
+                    if (listRectangle.get(i).inside(mx, my)) {
+                        index = i;
+                    }
+                }
+                params = (FrameLayout.LayoutParams) frame.getChildAt(index).getLayoutParams();
+                left = params.leftMargin;
+                top = params.topMargin;
+
+                Log.d("Change color","Start to change color");
+                listRectangle.get(index).changeColor(currentColor);
+
                 break;
-            case MotionEvent.ACTION_MOVE:
-                break;
+
             case MotionEvent.ACTION_UP:
-                drawRectangle();
-                drawingMode = false;
+               // movingMode = false;
                 break;
         }
+
     }
 
     private void onTouchEventMoveRectangle(MotionEvent event) {
@@ -189,7 +241,7 @@ public class Main extends ActionBarActivity implements Constants {
         return false;
     }
 
-    public void createRectangle() {
+    public void createRectangle(View view) {
         Rectangle tmp = new Rectangle(this, 0, 0, SIZE_MAX_X_RECTANGLE, SIZE_MAX_Y_RECTANGLE);
         listRectangle.add(tmp);
         frame.addView(tmp, idFrame);
@@ -202,25 +254,8 @@ public class Main extends ActionBarActivity implements Constants {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_rectangle:
-                createRectangle();
-//               drawingMode = true;
-//                   return true;
-                break;
-            case R.id.action_color:
-                Toast.makeText(Main.this, "alert", Toast.LENGTH_LONG).show();
-                break;
-
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void paintClicked(View view){
+        Log.d("test", view.getTag().toString());
+        currentColor = view.getTag().toString();
     }
-
 }

@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">0dp</dimen>
 
     <dimen name="button_create_rectangle">40dp</dimen>
+    <dimen name="large_brush">30dp</dimen>
+
 </resources>

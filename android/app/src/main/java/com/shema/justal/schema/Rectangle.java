@@ -2,6 +2,7 @@ package com.shema.justal.schema;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,10 @@ public class Rectangle extends View {
     private float left;
     private float bottom;
     private float top;
+
+    private Paint mPaintFinal;
+    String color = "#FFFFFF";
+
 
     /**
      * The contructor of the rectangle
@@ -36,8 +41,13 @@ public class Rectangle extends View {
     @Override
     public void onDraw(Canvas canvas) {
         Log.d("Canvas", "!!!!");
-        Paint mPaintFinal = new Paint(Paint.DITHER_FLAG);
-        mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
+        mPaintFinal = new Paint(Paint.DITHER_FLAG);
+      //  mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
+
+        mPaintFinal.setColor(Color.parseColor(color));
+
+       //  Log.d("Color", String.valueOf(android.R.color.holo_orange_dark));
+
         canvas.drawRect(left, top , right, bottom, mPaintFinal);
     }
 
@@ -80,6 +90,14 @@ public class Rectangle extends View {
         this.top+=y;
         this.left+=x;
         this.right+=x;
+    }
+
+    void changeColor(String color) {
+
+        Log.d("Change color", "Try to change color");
+        //mPaintFinal = new Paint(Paint.DITHER_FLAG);
+       this.color = color;
+        invalidate();
     }
 }
 
