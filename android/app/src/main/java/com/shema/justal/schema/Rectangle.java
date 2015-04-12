@@ -39,8 +39,6 @@ public class Rectangle extends View {
         Paint mPaintFinal = new Paint(Paint.DITHER_FLAG);
         mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
         canvas.drawRect(left, top , right, bottom, mPaintFinal);
-
-
     }
 
     /**
