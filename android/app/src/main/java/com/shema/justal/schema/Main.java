@@ -32,6 +32,7 @@ public class Main extends ActionBarActivity implements Constants {
 
     private boolean drawingMode = false;
     private boolean movingMode = false;
+    private boolean changeColor = false;
 
     private FrameLayout.LayoutParams params;
     private int left, top, index;
@@ -77,8 +78,10 @@ public class Main extends ActionBarActivity implements Constants {
             Log.d("Tourh Event","inside");
 
             //rectangle = new Rectangle(this);
-
-            onTouchEventChangeColor(event);
+            if(changeColor == true){
+                onTouchEventChangeColor(event);
+                changeColor = false;
+            }
             movingMode = true;
         }
 
@@ -257,5 +260,6 @@ public class Main extends ActionBarActivity implements Constants {
     public void paintClicked(View view){
         Log.d("test", view.getTag().toString());
         currentColor = view.getTag().toString();
+        changeColor = true;
     }
 }
