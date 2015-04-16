@@ -7,28 +7,21 @@
     tools:ignore="MergeRootFrame">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="#FFCCCCCC"
         android:orientation="vertical"
         tools:context=".Main"
         android:weightSum="1">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
             <ImageButton
                 android:id="@+id/new_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/start_new"
+                android:layout_gravity="center"
                 android:onClick="createRectangle"
                 android:src="@drawable/new_pic" />
-
-        </LinearLayout>
         <!--        <Button
                     android:layout_height="@dimen/button_create_rectangle"
                     android:layout_width="fill_parent"
@@ -37,16 +30,11 @@
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="434dp"
-            android:id="@+id/framelayout"
-            android:layout_weight="0.43"></FrameLayout>
-        <!-- Color Palette -->
-
-        <LinearLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/framelayout"
+            android:layout_weight="1"></FrameLayout>
+        <!-- Color Palette -->
 
 
             <!-- Bottom Row -->
@@ -54,12 +42,14 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <ImageButton
                     android:layout_width="@dimen/large_brush"
                     android:layout_height="@dimen/large_brush"
                     android:layout_margin="2dp"
+                    android:layout_gravity="bottom"
                     android:background="#FF0000FF"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
@@ -117,7 +107,5 @@
                     android:tag="#FF000000" />
             </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
 
 </FrameLayout>
