@@ -57,9 +57,11 @@ public class Main extends ActionBarActivity implements Constants {
         // Calculate the fucking size of the bar - There is certainly a way for passing this
         Window win = getWindow();
         contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();
+        int correctionTMP = 236; //Changement inComming, why 236 ? (31) for the picture, (contentView) status bar
         mx = event.getX();
-        my = event.getY() - contentViewTop - 40;
-
+        my = event.getY() - contentViewTop - correctionTMP; //TODO There is an error there, the my has to be zero on the left corner. The only way to do this is to minus this value by 236, but why 236 ?
+        Log.d("Tourh Event",String.valueOf(my));
+        Log.d("Tourh Event",String.valueOf(contentViewTop));
         /*if (!drawingMode && !movingMode) {
             if (!inside(mx, my)) {
                 Toast.makeText(Main.this, "inside", Toast.LENGTH_LONG).show();
