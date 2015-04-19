@@ -9,8 +9,16 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List; 
 
 /**
  * The main program
@@ -213,21 +221,44 @@ public class Main extends ActionBarActivity implements Constants {
         return true;
     }
 
+	    private void readXML(String url) throws XmlPullParserException, IOException {
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = factory.newPullParser();
+        URL input = new URL(url);
+        xpp.setInput(input.openStream(),null);
+        int eventType = xpp.getEventType();
+
+        String currentTag = null;
+        int posX=0;
+        int posY=0;
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_TAG) {
+                currentTag = xpp.getName();
+            } else if (eventType == XmlPullParser.TEXT) {
+                if ("x".equals(currentTag)) {
+                    posX = Integer.valueOf(xpp.getText());
+                }
+                if ("y".equals(currentTag)) {
+                    posY = Integer.valueOf(xpp.getText());
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+                if ("rectangle".equals(xpp.getName())) {
+                    drawRectangle(posX,posY);
+                }
+            }
+            eventType = xpp.next();
+        }
+    }
+	
     /**
      * Drawing a simple rectangle if this one follow some principle
      */
-    private void drawRectangle() {
-//        Log.d("Draw", "!!!");
-        float right = mStartX > mx ? mStartX : mx;
-        float left = mStartX > mx ? mx : mStartX;
-        float bottom = mStartY > my ? mStartY : my;
-        float top = mStartY > my ? my : mStartY;
-        if (isSizeDrawable(left, top, right, bottom) && isOutOfRectangle(left, top, right, bottom)) {
-            Rectangle tmp = new Rectangle(this, left, top, right, bottom);
-            listRectangle.add(tmp);
-            frame.addView(tmp, idFrame);
-            idFrame++;
-        }
+    private void drawRectangle(int posX,int posY) {
+        Rectangle tmp = new Rectangle(this, posX+0, posY+0, posX+SIZE_MAX_X_RECTANGLE, posY+SIZE_MAX_Y_RECTANGLE);
+        listRectangle.add(tmp);
+        frame.addView(tmp, idFrame);
+        idFrame++;
     }
 
     /**
