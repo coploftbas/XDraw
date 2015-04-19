@@ -220,8 +220,61 @@ public class Main extends ActionBarActivity implements Constants {
         }
         return true;
     }
+	
+	public void writeXML(int posX,int posY) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        String filepath = Environment.getExternalStorageDirectory().toString()+"/sdqi.xml";
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        Document doc = docBuilder.parse(filepath);
 
-	    private void readXML(String url) throws XmlPullParserException, IOException {
+        Node company = doc.getFirstChild();
+
+        Node staff = doc.getElementsByTagName("rectangles").item(0);
+
+        // append a new node to staff
+        Element rectangle = doc.createElement("rectangle");
+        staff.appendChild(rectangle);
+
+        Element id = doc.createElement("id");
+        id.appendChild(doc.createTextNode(String.valueOf(idFrame)));
+        rectangle.appendChild(id);
+
+        Element label = doc.createElement("label");
+        label.appendChild(doc.createTextNode("MyLabel"+String.valueOf(idFrame)));
+        rectangle.appendChild(label);
+
+        Element x = doc.createElement("x");
+        x.appendChild(doc.createTextNode(String.valueOf(posX)));
+        rectangle.appendChild(x);
+
+        Element y = doc.createElement("y");
+        y.appendChild(doc.createTextNode(String.valueOf(posY)));
+        rectangle.appendChild(y);
+
+        Element width = doc.createElement("width");
+        width.appendChild(doc.createTextNode(String.valueOf(idFrame)));
+        rectangle.appendChild(width);
+
+        Element height = doc.createElement("height");
+        width.appendChild(doc.createTextNode(String.valueOf(idFrame)));
+        rectangle.appendChild(height);
+
+        Element color = doc.createElement("color");
+        color.appendChild(doc.createTextNode(String.valueOf(idFrame)));
+        rectangle.appendChild(color);
+
+        // loop the staff child node
+        NodeList list = staff.getChildNodes();
+
+        // write the content into xml file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(filepath));
+        transformer.transform(source, result);
+    }
+
+	public void readXML(String url) throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp = factory.newPullParser();
@@ -277,7 +330,8 @@ public class Main extends ActionBarActivity implements Constants {
         return false;
     }
 
-    public void createRectangle(View view) {
+    public void createRectangle(View view)  throws ParserConfigurationException, TransformerException, SAXException, IOException {
+        //writeXML(0,0); TODO Create a SD Card
         Rectangle tmp = new Rectangle(this, 0, 0, SIZE_MAX_X_RECTANGLE, SIZE_MAX_Y_RECTANGLE);
         listRectangle.add(tmp);
         frame.addView(tmp, idFrame);
