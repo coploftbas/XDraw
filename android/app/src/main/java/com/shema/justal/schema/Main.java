@@ -1,6 +1,8 @@
 package com.shema.justal.schema;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -9,16 +11,39 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List; 
+import java.util.List;
+import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 /**
  * The main program
@@ -55,6 +80,34 @@ public class Main extends ActionBarActivity implements Constants {
         frame = (FrameLayout) findViewById(R.id.framelayout);
 
         //Log.d("Create","O");
+
+        new AsyncTask<Integer, Void, Void>() {
+            @Override
+            protected Void doInBackground(Integer... params) {
+                try {
+
+                   // Log.d("Info return", ReadFile("st116389", "password", "bazooka.cs.ait.ac.th", 22));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(1);
+
+        new AsyncTask<Integer, Void, Void>() {
+            @Override
+            protected Void doInBackground(Integer... params) {
+                try {
+
+
+                   // Log.d("Info return", WriteFile("st116389", "password", "bazooka.cs.ait.ac.th", 22));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(1);
 
     }
 
@@ -348,5 +401,306 @@ public class Main extends ActionBarActivity implements Constants {
         Log.d("test", view.getTag().toString());
         currentColor = view.getTag().toString();
         changeColor = true;
+    }
+
+    public String WriteFile(String username, String password, String hostname, int port)
+            throws Exception {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(username, hostname, port);
+        session.setPassword(password);
+
+        // Avoid asking for key confirmation
+        Properties prop = new Properties();
+        prop.put("StrictHostKeyChecking", "no");
+        session.setConfig(prop);
+
+        session.connect();
+
+        // Log.d("Info Path : ", getResources().getString(R.xml.trying));
+
+
+        //Log.d("AbsolutePath", getFilesDir().getAbsolutePath());
+
+
+        String path = getFilesDir().getAbsolutePath();
+
+        String localPath = path + "/trying.xml";
+
+
+        writeFileToServer(session,localPath,"trying_999.xml");
+
+        session.disconnect();
+
+        return "Finish Writing";
+    }
+
+
+    public String ReadFile(String username, String password, String hostname, int port)
+            throws Exception {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(username, hostname, port);
+        session.setPassword(password);
+
+        // Avoid asking for key confirmation
+        Properties prop = new Properties();
+        prop.put("StrictHostKeyChecking", "no");
+        session.setConfig(prop);
+
+        session.connect();
+
+        // Log.d("Info Path : ", getResources().getString(R.xml.trying));
+
+
+        //Log.d("AbsolutePath", getFilesDir().getAbsolutePath());
+
+
+        String path = getFilesDir().getAbsolutePath();
+
+        String localPath = path + "/trying.xml";
+
+        readFileFromServer(session, localPath,"trying.xml" );
+        session.disconnect();
+
+        return "Finish reading";
+    }
+
+
+    private void writeFileToServer(Session session,String localFile, String remoteFile) {
+        FileInputStream fis = null;
+        try {
+
+            // InputStream ins = getResources().openRawResource(R.xml.trying);
+
+            String lfile = localFile; //getResources().getString(R.xml.trying); // localhost file path
+            String rfile = remoteFile ;// remote file path
+
+
+            boolean ptimestamp = false;
+
+            // exec 'scp -t rfile' remotely
+            String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + rfile;
+            Channel channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(command);
+
+            // get I/O streams for remote scp
+            OutputStream out = channel.getOutputStream();
+            InputStream in = channel.getInputStream();
+
+            channel.connect();
+
+            if (checkAck(in) != 0) {
+                System.exit(0);
+            }
+
+
+            File _lfile = new File(lfile);
+
+
+            if (ptimestamp) {
+                command = "T " + (_lfile.lastModified() / 1000) + " 0";
+                // The access time should be sent here,
+                // but it is not accessible with JavaAPI ;-<
+                command += (" " + (_lfile.lastModified() / 1000) + " 0\n");
+                out.write(command.getBytes());
+                out.flush();
+                if (checkAck(in) != 0) {
+                    System.exit(0);
+                }
+            }
+
+            // send "C0644 filesize filename", where filename should not include '/'
+            long filesize = _lfile.length();
+            command = "C0644 " + filesize + " ";
+            if (lfile.lastIndexOf('/') > 0) {
+                command += lfile.substring(lfile.lastIndexOf('/') + 1);
+            } else {
+                command += lfile;
+            }
+            command += "\n";
+            out.write(command.getBytes());
+            out.flush();
+            if (checkAck(in) != 0) {
+                System.exit(0);
+            }
+
+
+            // send a content of lifle
+
+            fis = new FileInputStream(new File(lfile)); //getResources().openRawResource(R.xml.trying);
+
+            byte[] buf = new byte[1024];
+            while (true) {
+                int len = fis.read(buf, 0, buf.length);
+                if (len <= 0) break;
+                out.write(buf, 0, len); //out.flush();
+            }
+            fis.close();
+            fis = null;
+            // send '\0'
+            buf[0] = 0;
+            out.write(buf, 0, 1);
+            out.flush();
+            if (checkAck(in) != 0) {
+                System.exit(0);
+            }
+            out.close();
+
+            fis.close();
+            channel.disconnect();
+
+            //  session.disconnect();
+            Log.d("Info: " ,"Writing file is finished");
+
+            System.exit(0);
+        } catch (Exception e) {
+            System.out.println(e);
+            try {
+                if (fis != null) fis.close();
+            } catch (Exception ee) {
+            }
+        }
+    }
+
+    private void readFileFromServer(Session session,String localFile,String remoteFile) {
+
+        FileOutputStream fos = null;
+        try {
+
+            String rfile = remoteFile; // remote file
+            String lfile = localFile;// local file
+
+            // exec 'scp -f rfile' remotely
+            String command = "scp -f " + rfile;
+            Channel channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(command);
+
+            // get I/O streams for remote scp
+            OutputStream out = channel.getOutputStream();
+            InputStream in = channel.getInputStream();
+
+            channel.connect();
+
+            byte[] buf = new byte[1024];
+
+            // send '\0'
+            buf[0] = 0;
+            out.write(buf, 0, 1);
+            out.flush();
+
+            while (true) {
+                int c = checkAck(in);
+                if (c != 'C') {
+                    break;
+                }
+
+                // read '0644 '
+                in.read(buf, 0, 5);
+
+                long filesize = 0L;
+                while (true) {
+                    if (in.read(buf, 0, 1) < 0) {
+                        // error
+                        break;
+                    }
+                    if (buf[0] == ' ') break;
+                    filesize = filesize * 10L + (long) (buf[0] - '0');
+                }
+
+                String file = null;
+                for (int i = 0; ; i++) {
+                    in.read(buf, i, 1);
+                    if (buf[i] == (byte) 0x0a) {
+                        file = new String(buf, 0, i);
+                        break;
+                    }
+                }
+
+                Log.d("Info read file from server", "filesize=" + filesize + ", file=" + file);
+
+                // send '\0'
+                buf[0] = 0;
+                out.write(buf, 0, 1);
+                out.flush();
+
+
+
+                // String path = getFilesDir().getAbsolutePath();
+
+                // String localPath = path + "/POP.xml";
+
+                // Log.d("PATH 1:" ,localPath) ;
+                // Log.d("PATH:" ,path + "/POP.xml") ;
+
+                fos =  new FileOutputStream (new File(lfile));
+
+                //fos = openFileOutput("Test.xml", MODE_PRIVATE);
+
+                int foo;
+                while (true) {
+                    if (buf.length < filesize) foo = buf.length;
+                    else foo = (int) filesize;
+                    foo = in.read(buf, 0, foo);
+                    if (foo < 0) {
+                        // error
+                        break;
+                    }
+                    fos.write(buf, 0, foo);
+                    filesize -= foo;
+                    if (filesize == 0L) break;
+                }
+                fos.close();
+                fos = null;
+
+                if (checkAck(in) != 0) {
+                    System.exit(0);
+                }
+
+                // send '\0'
+                buf[0] = 0;
+                out.write(buf, 0, 1);
+                out.flush();
+            }
+
+            out.close();
+            channel.disconnect();
+            fos.close();
+            //  session.disconnect();
+
+            System.exit(0);
+        } catch (Exception e) {
+            System.out.println(e);
+            try {
+                if (fos != null) fos.close();
+            } catch (Exception ee) {
+            }
+        }
+    }
+
+
+    static int checkAck(InputStream in) throws IOException {
+        int b = in.read();
+        // b may be 0 for success,
+        //          1 for error,
+        //          2 for fatal error,
+        //          -1
+        if (b == 0) return b;
+        if (b == -1) return b;
+
+        if (b == 1 || b == 2) {
+            StringBuffer sb = new StringBuffer();
+            int c;
+            do {
+                c = in.read();
+                sb.append((char) c);
+            }
+            while (c != '\n');
+            if (b == 1) { // error
+                System.out.print(sb.toString());
+            }
+            if (b == 2) { // fatal error
+                System.out.print(sb.toString());
+            }
+        }
+        return b;
     }
 }
