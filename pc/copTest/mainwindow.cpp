@@ -147,36 +147,43 @@ void MainWindow::processRectangle(){
     if (!xml.isStartElement() || xml.name() != "rectangle")
             return;
 
-    while (xml.readNextStartElement()) {
-        if (xml.name() == "id")
-            //from = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
-        else if (xml.name() == "label")
-            //to = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
-        else if (xml.name() == "x")
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
-        else if (xml.name() == "y")
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
-        else if (xml.name() == "width")
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
-        else if (xml.name() == "height")
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
-        else if (xml.name() == "color")
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+    qreal my_x, my_y = -1;
 
+    while (xml.readNextStartElement()) {
+        if (xml.name() == "id"){
+            //from = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
+        }else if (xml.name() == "label"){
+            //to = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
+        }else if (xml.name() == "x"){
+            //conversion = readNextText();
+            my_x = xml.readElementText().toDouble();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_x);
+        }else if (xml.name() == "y"){
+            //conversion = readNextText();
+            my_y = xml.readElementText().toDouble();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_y);
+        }else if (xml.name() == "width"){
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
+        }else if (xml.name() == "height"){
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
+        }else if (xml.name() == "color"){
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
+        }
 
 
 
     //#ifndef USE_READ_ELEMENT_TEXT
-            xml.skipCurrentElement();
+            //xml.skipCurrentElement();
     //#endif
-        }
+     }
+
+    if ( !(my_x==-1 || my_y == -1) )
+        drawRectangle(my_x,my_y);
 
 
 }
@@ -189,6 +196,7 @@ QString MainWindow::readNextText(){
         return xml.readElementText();
     #endif
 }
+
 
 void MainWindow::on_writeButton_clicked()
 {
@@ -217,4 +225,13 @@ void MainWindow::on_writeButton_clicked()
     file.close();
 
 
+}
+
+void MainWindow::drawRectangle(qreal x, qreal y)
+{
+    QBrush blueBrush(Qt::gray);
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(1);
+    rectangle = scene->addRect(x, y,myWidth,myHeight,blackPen, blueBrush);
+    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
 }

@@ -37,6 +37,7 @@ private slots:
     void processRectangles();
     void processRectangle();
     QString readNextText();
+    void drawRectangle(qreal x, qreal y);
 
     void on_writeButton_clicked();
 
