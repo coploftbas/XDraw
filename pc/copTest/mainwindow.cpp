@@ -58,6 +58,8 @@ void MainWindow::on_pushButton_2_clicked()
        }*/
 }
 
+
+
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     QBrush blueBrush(Qt::gray);
@@ -92,4 +94,40 @@ void MainWindow::paintEvent(QPaintEvent *event)
     p.setPen(pen);
 
     drawLines(&p);
+}
+
+void MainWindow::on_xml_reader_clicked()
+{
+    QFile file("/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml");
+
+    //QXmlInputSource *source = new QXmlInputSource("/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml");
+
+    //bool ok = xmlReader.parse(source);
+    //if (!ok)
+            //std::cout << "Parsing failed." << std::endl;
+
+    while (!file.atEnd()) {
+        QXmlStreamReader reader(&file);
+
+        while(reader.atEnd()){
+            QXmlStreamReader::TokenType token = reader.readNext();
+
+            if (token = QXmlStreamReader::StartElement)
+                {
+                    if (reader.name() == "project")
+                    {
+                        ui->label->setText("kuy");
+
+                        //QString tUserName = reader.attributes().value().toString();
+                        //tUser = ParseUser(reader, tUserName);
+                        //mUserQuestions->insert(tUserName, *tUser);
+                    }
+                }
+
+        }
+
+        //QByteArray line = file.readLine();
+        //process_line(line);
+    }
+
 }

@@ -38,6 +38,7 @@ public:
     QLabel *label;
     QPushButton *pushButton;
     QPushButton *pushButton_2;
+    QPushButton *xml_reader;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -46,7 +47,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(854, 552);
+        MainWindow->resize(854, 599);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         layoutWidget = new QWidget(centralWidget);
@@ -86,6 +87,9 @@ public:
 
         horizontalLayout->addLayout(verticalLayout);
 
+        xml_reader = new QPushButton(centralWidget);
+        xml_reader->setObjectName(QStringLiteral("xml_reader"));
+        xml_reader->setGeometry(QRect(0, 520, 115, 32));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -109,6 +113,7 @@ public:
         label->setText(QApplication::translate("MainWindow", "TextLabel", 0));
         pushButton->setText(QApplication::translate("MainWindow", "Create rectangle", 0));
         pushButton_2->setText(QApplication::translate("MainWindow", "Change Color", 0));
+        xml_reader->setText(QApplication::translate("MainWindow", "PushButton", 0));
     } // retranslateUi
 
 };
