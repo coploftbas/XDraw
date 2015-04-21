@@ -3,7 +3,7 @@
 	<rectangles>
 		<rectangle>
 			<id>1</id>
-			<lable>MyLabel1</label>
+			<label>MyLabel1</label>
 			<x>10</x>
 			<y>10</y>
 			<width>80</width>
@@ -12,12 +12,12 @@
 		</rectangle>
 		<rectangle>
 			<id>2</id>
-			<lable>MyLabel2</label>
+			<label>MyLabel2</label>
 			<x>10</x>
 			<y>100</y>
 			<width>80</width>
 			<height>50</height>
-			<color>FFFFFF</color>
+			<color>AAAAAA</color>
 		</rectangle>	
 	</rectangles>
 </project>

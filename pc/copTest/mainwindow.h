@@ -36,6 +36,7 @@ private slots:
     void processRectangles();
     void processRectangle();
     QString readNextText();
+    void drawRectangle(qreal x, qreal y);
 
 private:
     Ui::MainWindow *ui;
