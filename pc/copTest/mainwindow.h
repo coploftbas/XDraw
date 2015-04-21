@@ -37,6 +37,10 @@ private:
     QPoint endPos;
     bool inDrawing;
     QVector<QLine> lines;
+    qreal posX;
+    qreal posY;
+    qreal myHeight=50;
+    qreal myWidth=80;
 };
 
 #endif // MAINWINDOW_H
