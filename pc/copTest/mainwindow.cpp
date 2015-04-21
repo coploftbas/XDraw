@@ -99,36 +99,99 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
 void MainWindow::on_xml_reader_clicked()
 {
-    QFile file("/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml");
+    QFile xmlFile("/Users/coploftbas/Documents/XDraw/sdqi.xml");
+       xmlFile.open(QIODevice::ReadOnly);
+       xml.setDevice(&xmlFile);
 
-    //QXmlInputSource *source = new QXmlInputSource("/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml");
+       //ui->label->setText(xml.name().toString());
 
-    //bool ok = xmlReader.parse(source);
-    //if (!ok)
-            //std::cout << "Parsing failed." << std::endl;
+       if (xml.readNextStartElement() && xml.name() == "project")
+          processProject();
+          //ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString());
 
-    while (!file.atEnd()) {
-        QXmlStreamReader reader(&file);
+       // readNextStartElement() leaves the stream in
+       // an invalid state at the end. A single readNext()
+       // will advance us to EndDocument.
+       if (xml.tokenType() == QXmlStreamReader::Invalid)
+           xml.readNext();
 
-        while(reader.atEnd()){
-            QXmlStreamReader::TokenType token = reader.readNext();
+       if (xml.hasError()) {
+           xml.raiseError();
+       }
+}
 
-            if (token = QXmlStreamReader::StartElement)
-                {
-                    if (reader.name() == "project")
-                    {
-                        ui->label->setText("kuy");
+void MainWindow::processProject(){
+    if (!xml.isStartElement() || xml.name() != "project")
+            return;
+        while (xml.readNextStartElement()) {
+            if (xml.name() == "rectangles"){
+                //processRate();
+                ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString());
+                processRectangles();
+            }
+            else
+                xml.skipCurrentElement();
+        }
+}
 
-                        //QString tUserName = reader.attributes().value().toString();
-                        //tUser = ParseUser(reader, tUserName);
-                        //mUserQuestions->insert(tUserName, *tUser);
-                    }
-                }
+void MainWindow::processRectangles(){
+    if (!xml.isStartElement() || xml.name() != "rectangles")
+            return;
+        while (xml.readNextStartElement()) {
+            if (xml.name() == "rectangle"){
+                //processRate();
+                ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString());
+                processRectangle();
+            }
+            else
+                xml.skipCurrentElement();
+        }
+}
 
+void MainWindow::processRectangle(){
+
+    if (!xml.isStartElement() || xml.name() != "rectangle")
+            return;
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == "id")
+            //from = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+        else if (xml.name() == "label")
+            //to = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+        else if (xml.name() == "x")
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+        else if (xml.name() == "y")
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+        else if (xml.name() == "width")
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+        else if (xml.name() == "height")
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+        else if (xml.name() == "color")
+            //conversion = readNextText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+readNextText());
+
+
+
+
+    //#ifndef USE_READ_ELEMENT_TEXT
+            xml.skipCurrentElement();
+    //#endif
         }
 
-        //QByteArray line = file.readLine();
-        //process_line(line);
-    }
 
+}
+
+QString MainWindow::readNextText(){
+    #ifndef USE_READ_ELEMENT_TEXT
+        xml.readNext();
+        return xml.text().toString();
+    #else
+        return xml.readElementText();
+    #endif
 }

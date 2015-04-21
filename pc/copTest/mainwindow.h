@@ -32,6 +32,10 @@ private slots:
     void paintEvent(QPaintEvent *event);
 
     void on_xml_reader_clicked();
+    void processProject();
+    void processRectangles();
+    void processRectangle();
+    QString readNextText();
 
 private:
     Ui::MainWindow *ui;
@@ -45,6 +49,7 @@ private:
     qreal posY;
     qreal myHeight=50;
     qreal myWidth=80;
+    QXmlStreamReader xml;
 };
 
 #endif // MAINWINDOW_H
