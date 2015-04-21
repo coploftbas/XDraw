@@ -16,6 +16,7 @@
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -33,9 +34,11 @@ public:
     QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
+    QGraphicsView *graphicsView;
+    QLabel *label;
     QPushButton *pushButton;
     QPushButton *pushButton_2;
-    QGraphicsView *graphicsView;
+    QPushButton *xml_reader;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -44,7 +47,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(854, 552);
+        MainWindow->resize(854, 599);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         layoutWidget = new QWidget(centralWidget);
@@ -58,6 +61,19 @@ public:
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(6);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        graphicsView = new QGraphicsView(layoutWidget);
+        graphicsView->setObjectName(QStringLiteral("graphicsView"));
+        graphicsView->setMaximumSize(QSize(16777215, 16777215));
+        graphicsView->setMouseTracking(false);
+        graphicsView->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
+
+        verticalLayout->addWidget(graphicsView);
+
+        label = new QLabel(layoutWidget);
+        label->setObjectName(QStringLiteral("label"));
+
+        verticalLayout->addWidget(label);
+
         pushButton = new QPushButton(layoutWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
 
@@ -71,14 +87,9 @@ public:
 
         horizontalLayout->addLayout(verticalLayout);
 
-        graphicsView = new QGraphicsView(layoutWidget);
-        graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        graphicsView->setMaximumSize(QSize(16777215, 16777215));
-        graphicsView->setMouseTracking(false);
-        graphicsView->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-
-        horizontalLayout->addWidget(graphicsView);
-
+        xml_reader = new QPushButton(centralWidget);
+        xml_reader->setObjectName(QStringLiteral("xml_reader"));
+        xml_reader->setGeometry(QRect(0, 520, 115, 32));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -99,8 +110,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "C", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "ChangeColor", 0));
+        label->setText(QApplication::translate("MainWindow", "TextLabel", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "Create rectangle", 0));
+        pushButton_2->setText(QApplication::translate("MainWindow", "Change Color", 0));
+        xml_reader->setText(QApplication::translate("MainWindow", "PushButton", 0));
     } // retranslateUi
 
 };

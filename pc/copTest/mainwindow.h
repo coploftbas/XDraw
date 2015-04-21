@@ -9,6 +9,8 @@
 #include <QGraphicsRectItem>
 #include <QColorDialog>
 #include <QMouseEvent>
+#include <QFile>
+#include <QXmlStreamReader>
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +30,8 @@ private slots:
     void mousePressEvent(QMouseEvent *e);
     void drawLines(QPainter *event);
     void paintEvent(QPaintEvent *event);
+
+    void on_xml_reader_clicked();
 
 private:
     Ui::MainWindow *ui;
