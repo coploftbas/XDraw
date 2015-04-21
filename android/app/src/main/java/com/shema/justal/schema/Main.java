@@ -66,7 +66,8 @@ public class Main extends ActionBarActivity implements Constants {
     private boolean drawingMode = false;
     private boolean movingMode = false;
     private boolean changeColor = false;
-
+	private File gpxfile;
+	
     private FrameLayout.LayoutParams params;
     private int left, top, index;
     private float tmpX = 0, tmpY = 0, newX = 0, newY = 0;
@@ -274,79 +275,106 @@ public class Main extends ActionBarActivity implements Constants {
         return true;
     }
 	
-	public void writeXML(int posX,int posY) throws ParserConfigurationException, IOException, SAXException, TransformerException {
-        String filepath = Environment.getExternalStorageDirectory().toString()+"/sdqi.xml";
+    public void saveData(View view) throws ParserConfigurationException, TransformerException, SAXException, IOException {
+        writeXML();
+    }
+
+    public void writeXML() throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        Log.d("Change color",getFilesDir().getAbsolutePath());
+        File root = new File(getFilesDir().getAbsolutePath(), "sdqi.xml");
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+        gpxfile = new File(root, "sdqi.xml");
+        FileWriter writer = new FileWriter(gpxfile);
+        writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<project>\n" +
+                "\t<rectangles>\n" +
+                "\t</rectangles>\n" +
+                "</project>");
+        writer.flush();
+        writer.close();
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(filepath);
+        Document doc = docBuilder.parse(gpxfile);
 
         Node company = doc.getFirstChild();
 
-        Node staff = doc.getElementsByTagName("rectangles").item(0);
+        for(int i=0;i<listRectangle.size();i++) {
+            Node staff = doc.getElementsByTagName("rectangles").item(0);
 
-        // append a new node to staff
-        Element rectangle = doc.createElement("rectangle");
-        staff.appendChild(rectangle);
+            // append a new node to staff
+            Element rectangle = doc.createElement("rectangle");
+            staff.appendChild(rectangle);
 
-        Element id = doc.createElement("id");
-        id.appendChild(doc.createTextNode(String.valueOf(idFrame)));
-        rectangle.appendChild(id);
+            Element id = doc.createElement("id");
+            id.appendChild(doc.createTextNode(String.valueOf(i)));
+            rectangle.appendChild(id);
 
-        Element label = doc.createElement("label");
-        label.appendChild(doc.createTextNode("MyLabel"+String.valueOf(idFrame)));
-        rectangle.appendChild(label);
+            Element label = doc.createElement("label");
+            label.appendChild(doc.createTextNode("MyLabel" + String.valueOf(i)));
+            rectangle.appendChild(label);
 
-        Element x = doc.createElement("x");
-        x.appendChild(doc.createTextNode(String.valueOf(posX)));
-        rectangle.appendChild(x);
+            Element x = doc.createElement("x");
+            x.appendChild(doc.createTextNode(String.valueOf(listRectangle.get(i).getPositionX())));
+            rectangle.appendChild(x);
 
-        Element y = doc.createElement("y");
-        y.appendChild(doc.createTextNode(String.valueOf(posY)));
-        rectangle.appendChild(y);
+            Element y = doc.createElement("y");
+            y.appendChild(doc.createTextNode(String.valueOf(listRectangle.get(i).getPositionY())));
+            rectangle.appendChild(y);
 
-        Element width = doc.createElement("width");
-        width.appendChild(doc.createTextNode(String.valueOf(idFrame)));
-        rectangle.appendChild(width);
+            Element width = doc.createElement("width");
+            width.appendChild(doc.createTextNode(String.valueOf(SIZE_MAX_X_RECTANGLE)));
+            rectangle.appendChild(width);
 
-        Element height = doc.createElement("height");
-        width.appendChild(doc.createTextNode(String.valueOf(idFrame)));
-        rectangle.appendChild(height);
+            Element height = doc.createElement("height");
+            height.appendChild(doc.createTextNode(String.valueOf(SIZE_MAX_Y_RECTANGLE)));
+            rectangle.appendChild(height);
 
-        Element color = doc.createElement("color");
-        color.appendChild(doc.createTextNode(String.valueOf(idFrame)));
-        rectangle.appendChild(color);
+            Element color = doc.createElement("color");
+            color.appendChild(doc.createTextNode(listRectangle.get(i).getColor()));
+            rectangle.appendChild(color);
 
-        // loop the staff child node
-        NodeList list = staff.getChildNodes();
+            // loop the staff child node
+            NodeList list = staff.getChildNodes();
+        }
 
         // write the content into xml file
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File(filepath));
+        StreamResult result = new StreamResult(new File(gpxfile.getAbsolutePath()));
         transformer.transform(source, result);
     }
 
-	public void readXML(String url) throws XmlPullParserException, IOException {
+    public void readData(View view) throws ParserConfigurationException, TransformerException, SAXException, IOException, XmlPullParserException {
+        readXML();
+    }
+
+    public void readXML() throws XmlPullParserException, IOException {
+        frame.removeAllViews();
+        listRectangle = new ArrayList<Rectangle>();
+        idFrame=0;
+
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp = factory.newPullParser();
-        URL input = new URL(url);
+        URL input = gpxfile.toURI().toURL();
         xpp.setInput(input.openStream(),null);
         int eventType = xpp.getEventType();
 
         String currentTag = null;
-        int posX=0;
-        int posY=0;
+        float posX=0;
+        float posY=0;
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
                 currentTag = xpp.getName();
             } else if (eventType == XmlPullParser.TEXT) {
                 if ("x".equals(currentTag)) {
-                    posX = Integer.valueOf(xpp.getText());
+                    posX = (Float.valueOf(xpp.getText())).floatValue();
                 }
                 if ("y".equals(currentTag)) {
-                    posY = Integer.valueOf(xpp.getText());
+                    posY = (Float.valueOf(xpp.getText())).floatValue();
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if ("rectangle".equals(xpp.getName())) {
@@ -360,7 +388,7 @@ public class Main extends ActionBarActivity implements Constants {
     /**
      * Drawing a simple rectangle if this one follow some principle
      */
-    private void drawRectangle(int posX,int posY) {
+    private void drawRectangle(float posX,float posY) {
         Rectangle tmp = new Rectangle(this, posX+0, posY+0, posX+SIZE_MAX_X_RECTANGLE, posY+SIZE_MAX_Y_RECTANGLE);
         listRectangle.add(tmp);
         frame.addView(tmp, idFrame);
