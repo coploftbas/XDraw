@@ -2,8 +2,8 @@
 #include "myrectangle.h"
 #include "ui_mainwindow.h"
 
-int posX = 0;
-int posY = 0;
+qreal posX;
+qreal posY;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -58,6 +58,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     QBrush blueBrush(Qt::gray);
     QPen blackPen(Qt::black);
     //QPointF pt = QPointF::mapToScene(e->pos());
+
     rectangle = scene->addRect( e->pos().x(), e->pos().y(), 80, 50, blackPen, blueBrush );
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project>
+	<rectangles>
+		<rectangle>
+			<id>1</id>
+			<lable>MyLabel1</label>
+			<x>10</x>
+			<y>10</y>
+			<width>80</width>
+			<height>50</height>
+			<color>FFFFFF</color>
+		</rectangle>
+		<rectangle>
+			<id>2</id>
+			<lable>MyLabel2</label>
+			<x>10</x>
+			<y>100</y>
+			<width>80</width>
+			<height>50</height>
+			<color>FFFFFF</color>
+		</rectangle>	
+	</rectangles>
+</project>
