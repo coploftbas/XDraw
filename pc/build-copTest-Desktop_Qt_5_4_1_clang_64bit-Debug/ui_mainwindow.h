@@ -39,6 +39,7 @@ public:
     QPushButton *pushButton;
     QPushButton *pushButton_2;
     QPushButton *xml_reader;
+    QPushButton *writeButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -90,6 +91,9 @@ public:
         xml_reader = new QPushButton(centralWidget);
         xml_reader->setObjectName(QStringLiteral("xml_reader"));
         xml_reader->setGeometry(QRect(0, 520, 115, 32));
+        writeButton = new QPushButton(centralWidget);
+        writeButton->setObjectName(QStringLiteral("writeButton"));
+        writeButton->setGeometry(QRect(150, 520, 115, 32));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -114,6 +118,7 @@ public:
         pushButton->setText(QApplication::translate("MainWindow", "Create rectangle", 0));
         pushButton_2->setText(QApplication::translate("MainWindow", "Change Color", 0));
         xml_reader->setText(QApplication::translate("MainWindow", "PushButton", 0));
+        writeButton->setText(QApplication::translate("MainWindow", "Write XML", 0));
     } // retranslateUi
 
 };
