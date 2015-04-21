@@ -1,9 +1,13 @@
 #include "mainwindow.h"
 #include "myrectangle.h"
 #include "ui_mainwindow.h"
+#include <string>
 
-qreal posX;
-qreal posY;
+using namespace std;
+
+qreal posX = 0;
+qreal posY = 0;
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +34,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+    ui->label->setText(QString::number(posX));
 
     QBrush blueBrush(Qt::gray);
     QPen blackPen(Qt::black);
@@ -59,10 +64,14 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     QPen blackPen(Qt::black);
     //QPointF pt = QPointF::mapToScene(e->pos());
 
-    rectangle = scene->addRect( e->pos().x(), e->pos().y(), 80, 50, blackPen, blueBrush );
-    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+    rectangle = scene->addRect( e->pos().x()-10, e->pos().y()-18, 80, 50, blackPen, blueBrush );
+    //rectangle = scene->addRect( posX, posY, 80, 50, blackPen, blueBrush );
 
+    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+    ui->label->setText("Click => x:"+QString::number(e->pos().x()) + "  y:"+QString::number(e->pos().y()));
+    //ui->label->setText("Click => x:"+ (qreal)e->pos().x() + "  y:"+ (qreal)e->pos().y());
 }
+
 
 void MainWindow::drawLines(QPainter *p)
 {
