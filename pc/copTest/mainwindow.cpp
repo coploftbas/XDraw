@@ -53,12 +53,6 @@ void MainWindow::on_pushButton_2_clicked()
     QColor color = QColorDialog::getColor(Qt::green, this);
 
     rectangle->setBrush(color);
-       /*if (color.isValid())
-       {
-           ui->label->setText(color.name());
-           ui->label->setPalette(QPalette(color));
-           ui->label->setAutoFillBackground(true);
-       }*/
 }
 
 
@@ -200,9 +194,9 @@ QString MainWindow::readNextText(){
 
 void MainWindow::on_writeButton_clicked()
 {
-    QString filename = QFileDialog::getSaveFileName(this,tr("Save Xml"), ".",tr("Xml files (*.xml)"));
+    //QString filename = QFileDialog::getSaveFileName(this,tr("Save Xml"), ".",tr("Xml files (*.xml)"));
 
-    QFile file(filename);
+    QFile file("/Users/new482/Desktop/sdqi.xml");
     file.open(QIODevice::WriteOnly);
     QXmlStreamWriter xmlWriter(&file);
     xmlWriter.setAutoFormatting(true);
