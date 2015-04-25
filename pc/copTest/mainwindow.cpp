@@ -55,8 +55,6 @@ void MainWindow::on_pushButton_2_clicked()
     rectangle->setBrush(color);
 }
 
-
-
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     QBrush blueBrush(Qt::gray);
@@ -68,7 +66,6 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     ui->label->setText("Click => x:"+QString::number(e->pos().x()) + "  y:"+QString::number(e->pos().y()));
     //ui->label->setText("Click => x:"+ (qreal)e->pos().x() + "  y:"+ (qreal)e->pos().y());
 }
-
 
 void MainWindow::drawLines(QPainter *p)
 {
@@ -93,7 +90,9 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
 void MainWindow::on_xml_reader_clicked()
 {
-    QFile xmlFile("/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml");
+    QString niwnew_read = "/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml";
+    QString cop_read = "/Users/coploftbas/Documents/XDraw/sdqi.xml";
+    QFile xmlFile(cop_read);
        xmlFile.open(QIODevice::ReadOnly);
        xml.setDevice(&xmlFile);
 
@@ -168,20 +167,12 @@ void MainWindow::processRectangle(){
             //conversion = readNextText();
             ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
         }
-
-
-
-    //#ifndef USE_READ_ELEMENT_TEXT
-            //xml.skipCurrentElement();
-    //#endif
      }
-
-    if ( !(my_x==-1 || my_y == -1) )
+    if ( !(my_x==-1 || my_y == -1) ){
         drawRectangle(my_x,my_y);
-
-
+    }
 }
-
+/*
 QString MainWindow::readNextText(){
     #ifndef USE_READ_ELEMENT_TEXT
         xml.readNext();
@@ -190,13 +181,16 @@ QString MainWindow::readNextText(){
         return xml.readElementText();
     #endif
 }
-
+*/
 
 void MainWindow::on_writeButton_clicked()
 {
     //QString filename = QFileDialog::getSaveFileName(this,tr("Save Xml"), ".",tr("Xml files (*.xml)"));
 
-    QFile file("/Users/new482/Desktop/sdqi.xml");
+    QString niwnew_write = "/Users/new482/Desktop/sdqi.xml";
+    QString cop_write = "/Users/coploftbas/Desktop/sdqi.xml";
+
+    QFile file(cop_write);
     file.open(QIODevice::WriteOnly);
     QXmlStreamWriter xmlWriter(&file);
     xmlWriter.setAutoFormatting(true);
@@ -217,8 +211,6 @@ void MainWindow::on_writeButton_clicked()
     xmlWriter.writeEndElement();
 
     file.close();
-
-
 }
 
 void MainWindow::drawRectangle(qreal x, qreal y)
