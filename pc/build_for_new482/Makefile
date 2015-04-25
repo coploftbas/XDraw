@@ -182,7 +182,9 @@ DIST          = /Users/new482/Qt/5.4/clang_64/mkspecs/features/spec_pre.prf \
 		/Users/new482/Qt/5.4/clang_64/mkspecs/features/yacc.prf \
 		/Users/new482/Qt/5.4/clang_64/mkspecs/features/lex.prf \
 		../copTest/copTest.pro ../copTest/mainwindow.h \
-		../copTest/linklist.h ../copTest/main.cpp \
+		../copTest/linklist.h \
+		../ssh/include/libssh/libssh.h \
+		../ssh/include/libssh/legacy.h ../copTest/main.cpp \
 		../copTest/mainwindow.cpp
 QMAKE_TARGET  = copTest
 DESTDIR       = #avoid trailing-slash linebreak
@@ -519,7 +521,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../copTest/mainwindow.h ../copTest/linklist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../copTest/mainwindow.h ../copTest/linklist.h ../ssh/include/libssh/libssh.h ../ssh/include/libssh/legacy.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../copTest/main.cpp ../copTest/mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../copTest/mainwindow.ui $(DISTDIR)/
 

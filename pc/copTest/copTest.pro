@@ -16,6 +16,8 @@ SOURCES += main.cpp\
         mainwindow.cpp
 
 HEADERS  += mainwindow.h \
-    linklist.h
+    linklist.h \
+    ../ssh/include/libssh/libssh.h \
+    ../ssh/include/libssh/legacy.h
 
 FORMS    += mainwindow.ui
