@@ -14,6 +14,12 @@
         tools:context=".Main"
         android:weightSum="1">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
             <ImageButton
                 android:id="@+id/new_btn"
                 android:layout_width="wrap_content"
@@ -22,6 +28,25 @@
                 android:layout_gravity="center"
                 android:onClick="createRectangle"
                 android:src="@drawable/new_pic" />
+
+            <ImageButton
+                android:id="@+id/new_btn2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/start_new"
+                android:layout_gravity="center"
+                android:onClick="saveData"
+                android:src="@drawable/new_pic" />
+
+            <ImageButton
+                android:id="@+id/new_btn3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/start_new"
+                android:layout_gravity="center"
+                android:onClick="readData"
+                android:src="@drawable/new_pic" />
+    </LinearLayout>
         <!--        <Button
                     android:layout_height="@dimen/button_create_rectangle"
                     android:layout_width="fill_parent"

@@ -53,12 +53,6 @@ void MainWindow::on_pushButton_2_clicked()
     QColor color = QColorDialog::getColor(Qt::green, this);
 
     rectangle->setBrush(color);
-       /*if (color.isValid())
-       {
-           ui->label->setText(color.name());
-           ui->label->setPalette(QPalette(color));
-           ui->label->setAutoFillBackground(true);
-       }*/
 }
 
 
@@ -99,19 +93,13 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
 void MainWindow::on_xml_reader_clicked()
 {
-    QFile xmlFile("/Users/coploftbas/Documents/XDraw/sdqi.xml");
+    QFile xmlFile("/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml");
        xmlFile.open(QIODevice::ReadOnly);
        xml.setDevice(&xmlFile);
 
-       //ui->label->setText(xml.name().toString());
-
        if (xml.readNextStartElement() && xml.name() == "project")
           processProject();
-          //ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString());
 
-       // readNextStartElement() leaves the stream in
-       // an invalid state at the end. A single readNext()
-       // will advance us to EndDocument.
        if (xml.tokenType() == QXmlStreamReader::Invalid)
            xml.readNext();
 
@@ -203,7 +191,37 @@ QString MainWindow::readNextText(){
     #endif
 }
 
-void MainWindow::drawRectangle(qreal x, qreal y,)
+
+void MainWindow::on_writeButton_clicked()
+{
+    //QString filename = QFileDialog::getSaveFileName(this,tr("Save Xml"), ".",tr("Xml files (*.xml)"));
+
+    QFile file("/Users/new482/Desktop/sdqi.xml");
+    file.open(QIODevice::WriteOnly);
+    QXmlStreamWriter xmlWriter(&file);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+
+    xmlWriter.writeStartElement("project");
+    xmlWriter.writeStartElement("rectangles");
+    xmlWriter.writeStartElement("rectangle");
+        xmlWriter.writeTextElement("id","1");
+        xmlWriter.writeTextElement("label","Mylabel");
+        xmlWriter.writeTextElement("x","10");
+        xmlWriter.writeTextElement("y","10");
+        xmlWriter.writeTextElement("width","80");
+        xmlWriter.writeTextElement("height","50");
+        xmlWriter.writeTextElement("color","FFFFFF");
+    xmlWriter.writeEndElement();
+    xmlWriter.writeEndElement();
+    xmlWriter.writeEndElement();
+
+    file.close();
+
+
+}
+
+void MainWindow::drawRectangle(qreal x, qreal y)
 {
     QBrush blueBrush(Qt::gray);
     QPen blackPen(Qt::black);

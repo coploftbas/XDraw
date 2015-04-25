@@ -11,6 +11,7 @@
 #include <QMouseEvent>
 #include <QFile>
 #include <QXmlStreamReader>
+#include <QFileDialog>
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +38,8 @@ private slots:
     void processRectangle();
     QString readNextText();
     void drawRectangle(qreal x, qreal y);
+
+    void on_writeButton_clicked();
 
 private:
     Ui::MainWindow *ui;

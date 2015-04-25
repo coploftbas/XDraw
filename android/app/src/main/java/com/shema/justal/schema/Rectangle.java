@@ -38,6 +38,18 @@ public class Rectangle extends View {
         this.top = mStartY > my ? my : mStartY;
     }
 
+	public float getPositionY() {
+        return top;
+    }
+
+    public float getPositionX() {
+        return left;
+    }
+
+    public String getColor() {
+        return color;
+    }
+	
     @Override
     public void onDraw(Canvas canvas) {
         Log.d("Canvas", "!!!!");
@@ -47,7 +59,7 @@ public class Rectangle extends View {
         mPaintFinal.setColor(Color.parseColor(color));
 
        //  Log.d("Color", String.valueOf(android.R.color.holo_orange_dark));
-
+ 
         canvas.drawRect(left, top , right, bottom, mPaintFinal);
     }
 
