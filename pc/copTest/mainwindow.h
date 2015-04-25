@@ -33,8 +33,7 @@ private slots:
     void processProject();
     void processRectangles();
     void processRectangle();
-    void drawRectangle(qreal x, qreal y);
-
+    void drawRectangle(qreal id, qreal x, qreal y, qreal w, qreal h, QString c);
     void on_writeButton_clicked();
 
 private:

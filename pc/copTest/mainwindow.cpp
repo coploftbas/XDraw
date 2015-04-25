@@ -1,14 +1,35 @@
 #include "mainwindow.h"
+#include "linklist.h"
 #include "myrectangle.h"
 #include "ui_mainwindow.h"
 #include <string>
 
 using namespace std;
 
-qreal posX = 0;
-qreal posY = 0;
-QString default_color_brush = "#A4A4A4";
-QString default_color_pen = "#000000";
+LNK_LST *get_node()
+{
+    LNK_LST *p;
+    p=(LNK_LST *)malloc(sizeof(LNK_LST));
+
+    if(p) {
+        p->id = 0;
+        //p->label = "MyLabel";
+        p->x = 0;
+        p->y = 0;
+        p->width = 80;
+        p->height = 50;
+        //p->color = "A4A4A4";
+        p->next=NULL;
+    }
+    return p;
+}
+
+LNK_LST *head,*current;
+qreal rec_count = 0;
+qreal posX = 3;
+qreal posY = 3;
+QString default_color_brush = "A4A4A4";
+QString default_color_pen = "000000";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,35 +40,56 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
 
+    //This rectangle is to remove bug that cause from mouse clicking
     QBrush whiteBrush(Qt::white);
     QPen whitePen(Qt::white);
-
     qreal tmp_x = 0;
     qreal tmp_y = 0;
     qreal tmp_h = 0.001;
     qreal tmp_w = 0.0001;
-    //blackPen.setWidth(6);
-
     rectangle = scene->addRect(tmp_x,tmp_y,tmp_w,tmp_h,whitePen, whiteBrush);
-    //rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+    //end fixing bug
+
+    posX=0;
+    posY=0;
+    rec_count = 0;
+
+    //LNK_LST
+    head = get_node();
+    current = head;
+
 }
 
 MainWindow::~MainWindow()
 {
+    //free(head);
+    //free(current);
     delete ui;
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    ui->label->setText("x:"+QString::number(posX)+" y:"+QString::number(posY));
+    rec_count++;
+    current->id = rec_count;
+    //current->label = "MyLabel";
+    current->x = posX;
+    current->y = posY;
+    current->width = 80;
+    current->height = 50;
+    //current->color = default_color_brush.toStdString();
+
+    ui->label->setText("x:"+QString::number(posX)+" y:"+QString::number(posY)+" ["+QString::number(current->id)+"]");
     QColor color;
-    color.setNamedColor(default_color_brush);
+    color.setNamedColor("#"+default_color_brush);
     QBrush blueBrush(color);
-    color.setNamedColor(default_color_pen);
+    color.setNamedColor("#"+default_color_pen);
     QPen blackPen(color);
     blackPen.setWidth(3);
     rectangle = scene->addRect(posX, posY,myWidth,myHeight,blackPen, blueBrush);
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+
+    current->next = get_node();
+    current = current->next;
     posX += 50;
     posY += 50;
 }
@@ -66,17 +108,27 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     QColor color;
-    color.setNamedColor(default_color_brush);
+    color.setNamedColor("#"+default_color_brush);
     QBrush blueBrush(color);
-    color.setNamedColor(default_color_pen);
+    color.setNamedColor("#"+default_color_pen);
     QPen blackPen(color);
     blackPen.setWidth(3);
-    //QPointF pt = QPointF::mapToScene(e->pos());
     rectangle = scene->addRect( e->pos().x()-10, e->pos().y()-18, myWidth, myHeight, blackPen, blueBrush );
-    //rectangle = scene->addRect( posX, posY, 80, 50, blackPen, blueBrush );
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
     ui->label->setText("Click => x:"+QString::number(e->pos().x()) + "  y:"+QString::number(e->pos().y()));
-    //ui->label->setText("Click => x:"+ (qreal)e->pos().x() + "  y:"+ (qreal)e->pos().y());
+
+    rec_count++;
+    current->id = rec_count;
+    //current->label = "MyLabel";
+    current->x = e->pos().x();
+    current->y = e->pos().y();
+    current->width = 80;
+    current->height = 50;
+    //current->color = default_color_brush.toStdString();
+
+    current->next = get_node();
+    current = current->next;
+
 }
 
 void MainWindow::on_xml_reader_clicked()
@@ -131,40 +183,51 @@ void MainWindow::processRectangle(){
     if (!xml.isStartElement() || xml.name() != "rectangle")
             return;
 
-    qreal my_x, my_y = -1;
+    qreal my_id, my_x, my_y, my_width, my_height = -1;
+    QString my_color = NULL;
 
-    while (xml.readNextStartElement()) {
-        if (xml.name() == "id"){
-            //from = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
-        }else if (xml.name() == "label"){
+    while (xml.readNextStartElement())
+    {
+        if (xml.name() == "id")
+        {
+            my_id = xml.readElementText().toDouble();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_id);
+
+        }else if (xml.name() == "label")
+        {
             //to = readNextText();
             ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
-        }else if (xml.name() == "x"){
-            //conversion = readNextText();
+
+        }else if (xml.name() == "x")
+        {
             my_x = xml.readElementText().toDouble();
             ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_x);
-        }else if (xml.name() == "y"){
-            //conversion = readNextText();
+
+        }else if (xml.name() == "y")
+        {
             my_y = xml.readElementText().toDouble();
             ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_y);
-        }else if (xml.name() == "width"){
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
-        }else if (xml.name() == "height"){
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
-        }else if (xml.name() == "color"){
-            //conversion = readNextText();
-            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
-        }
 
+        }else if (xml.name() == "width")
+        {
+            my_width = xml.readElementText().toDouble();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_width);
+
+        }else if (xml.name() == "height")
+        {
+            my_height = xml.readElementText().toDouble();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_height);
+
+        }else if (xml.name() == "color")
+         {
+            my_color = xml.readElementText();
+            ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+my_color);
+        }
      }
 
-    if ( !(my_x==-1 || my_y == -1) )
-        drawRectangle(my_x,my_y);
-
-
+    if ( !(my_id==-1 || my_x==-1 || my_y == -1 || my_width == -1 || my_height == -1 || my_color==NULL) ){
+        drawRectangle(my_id,my_x,my_y,my_width,my_height,my_color);
+    }
 }
 
 void MainWindow::on_writeButton_clicked()
@@ -180,28 +243,56 @@ void MainWindow::on_writeButton_clicked()
     xmlWriter.setAutoFormatting(true);
     xmlWriter.writeStartDocument();
 
+    current = head;
+
     xmlWriter.writeStartElement("project");
     xmlWriter.writeStartElement("rectangles");
-    xmlWriter.writeStartElement("rectangle");
-        xmlWriter.writeTextElement("id","1");
-        xmlWriter.writeTextElement("label","Mylabel");
-        xmlWriter.writeTextElement("x","10");
-        xmlWriter.writeTextElement("y","10");
-        xmlWriter.writeTextElement("width","80");
-        xmlWriter.writeTextElement("height","50");
-        xmlWriter.writeTextElement("color","FFFFFF");
-    xmlWriter.writeEndElement();
+    for(int i=0;i<rec_count;i++){
+        xmlWriter.writeStartElement("rectangle");
+            xmlWriter.writeTextElement("id",QString::number(current->id));
+            xmlWriter.writeTextElement("label","Mylabel"+QString::number(current->id));
+            xmlWriter.writeTextElement("x",QString::number(current->x));
+            xmlWriter.writeTextElement("y",QString::number(current->y));
+            xmlWriter.writeTextElement("width",QString::number(current->width));
+            xmlWriter.writeTextElement("height",QString::number(current->height));
+            xmlWriter.writeTextElement("color","A4A4A4");
+        xmlWriter.writeEndElement();
+        current=current->next;
+    }
     xmlWriter.writeEndElement();
     xmlWriter.writeEndElement();
 
     file.close();
 }
 
-void MainWindow::drawRectangle(qreal x, qreal y)
+void MainWindow::drawRectangle(qreal id, qreal x, qreal y, qreal w, qreal h, QString c)
 {
-    QBrush blueBrush(Qt::gray);
+    QColor color;
+    color.setNamedColor("#"+c);
+    QBrush blueBrush(color);
     QPen blackPen(Qt::black);
     blackPen.setWidth(3);
-    rectangle = scene->addRect(x, y,myWidth,myHeight,blackPen, blueBrush);
-    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+
+    if(id<=rec_count){
+        //UPDATE OLD RECT
+
+    }else{
+        //DRAW NEW RECT
+        rectangle = scene->addRect(x,y,w,h,blackPen,blueBrush);
+        rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+
+        rec_count++;
+        current->id = rec_count;
+        //current->label = "MyLabel";
+        current->x = x;
+        current->y = y;
+        current->width = 80;
+        current->height = 50;
+        //current->color = default_color_brush.toStdString();
+
+        current->next = get_node();
+        current = current->next;
+    }
+
+
 }
