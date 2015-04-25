@@ -7,6 +7,8 @@ using namespace std;
 
 qreal posX = 0;
 qreal posY = 0;
+QString default_color_brush = "#A4A4A4";
+QString default_color_pen = "#000000";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //blackPen.setWidth(6);
 
     rectangle = scene->addRect(tmp_x,tmp_y,tmp_w,tmp_h,whitePen, whiteBrush);
-    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+    //rectangle->setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 MainWindow::~MainWindow()
@@ -37,11 +39,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    ui->label->setText(QString::number(posX));
-
-    QBrush blueBrush(Qt::gray);
-    QPen blackPen(Qt::black);
-    blackPen.setWidth(6);
+    ui->label->setText("x:"+QString::number(posX)+" y:"+QString::number(posY));
+    QColor color;
+    color.setNamedColor(default_color_brush);
+    QBrush blueBrush(color);
+    color.setNamedColor(default_color_pen);
+    QPen blackPen(color);
+    blackPen.setWidth(3);
     rectangle = scene->addRect(posX, posY,myWidth,myHeight,blackPen, blueBrush);
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
     posX += 50;
@@ -51,41 +55,28 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     QColor color = QColorDialog::getColor(Qt::green, this);
-
+    QString str;
+    str.append( QString::number( color.red(), 16 ).toUpper() )
+       .append( QString::number( color.green(), 16 ).toUpper() )
+       .append( QString::number( color.blue(), 16 ).toUpper() );
+    ui->label->setText("rgbcolor: #"+str);
     rectangle->setBrush(color);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
-    QBrush blueBrush(Qt::gray);
-    QPen blackPen(Qt::black);
+    QColor color;
+    color.setNamedColor(default_color_brush);
+    QBrush blueBrush(color);
+    color.setNamedColor(default_color_pen);
+    QPen blackPen(color);
+    blackPen.setWidth(3);
     //QPointF pt = QPointF::mapToScene(e->pos());
     rectangle = scene->addRect( e->pos().x()-10, e->pos().y()-18, myWidth, myHeight, blackPen, blueBrush );
     //rectangle = scene->addRect( posX, posY, 80, 50, blackPen, blueBrush );
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
     ui->label->setText("Click => x:"+QString::number(e->pos().x()) + "  y:"+QString::number(e->pos().y()));
     //ui->label->setText("Click => x:"+ (qreal)e->pos().x() + "  y:"+ (qreal)e->pos().y());
-}
-
-void MainWindow::drawLines(QPainter *p)
-{
-    if (!startPos.isNull() && !endPos.isNull())
-    {
-        p->drawLine(startPos, endPos);
-    }
-
-    p->drawLines(lines);
-}
-
-void MainWindow::paintEvent(QPaintEvent *event)
-{
-    QPainter p(this);
-    QPen pen;
-    pen.setColor(Qt::red);
-    pen.setWidth(4);
-    p.setPen(pen);
-
-    drawLines(&p);
 }
 
 void MainWindow::on_xml_reader_clicked()
@@ -167,21 +158,14 @@ void MainWindow::processRectangle(){
             //conversion = readNextText();
             ui->label->setText("get inside the if case ==>  tagname:"+xml.name().toString()+" value:"+xml.readElementText());
         }
+
      }
-    if ( !(my_x==-1 || my_y == -1) ){
+
+    if ( !(my_x==-1 || my_y == -1) )
         drawRectangle(my_x,my_y);
-    }
+
+
 }
-/*
-QString MainWindow::readNextText(){
-    #ifndef USE_READ_ELEMENT_TEXT
-        xml.readNext();
-        return xml.text().toString();
-    #else
-        return xml.readElementText();
-    #endif
-}
-*/
 
 void MainWindow::on_writeButton_clicked()
 {
@@ -217,7 +201,7 @@ void MainWindow::drawRectangle(qreal x, qreal y)
 {
     QBrush blueBrush(Qt::gray);
     QPen blackPen(Qt::black);
-    blackPen.setWidth(1);
+    blackPen.setWidth(3);
     rectangle = scene->addRect(x, y,myWidth,myHeight,blackPen, blueBrush);
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
 }

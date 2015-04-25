@@ -29,14 +29,10 @@ private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void mousePressEvent(QMouseEvent *e);
-    void drawLines(QPainter *event);
-    void paintEvent(QPaintEvent *event);
-
     void on_xml_reader_clicked();
     void processProject();
     void processRectangles();
     void processRectangle();
-    QString readNextText();
     void drawRectangle(qreal x, qreal y);
 
     void on_writeButton_clicked();
