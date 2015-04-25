@@ -181,7 +181,8 @@ DIST          = /Users/new482/Qt/5.4/clang_64/mkspecs/features/spec_pre.prf \
 		/Users/new482/Qt/5.4/clang_64/mkspecs/features/exceptions.prf \
 		/Users/new482/Qt/5.4/clang_64/mkspecs/features/yacc.prf \
 		/Users/new482/Qt/5.4/clang_64/mkspecs/features/lex.prf \
-		../copTest/copTest.pro ../copTest/mainwindow.h ../copTest/main.cpp \
+		../copTest/copTest.pro ../copTest/mainwindow.h \
+		../copTest/linklist.h ../copTest/main.cpp \
 		../copTest/mainwindow.cpp
 QMAKE_TARGET  = copTest
 DESTDIR       = #avoid trailing-slash linebreak
@@ -518,7 +519,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../copTest/mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../copTest/mainwindow.h ../copTest/linklist.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../copTest/main.cpp ../copTest/mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../copTest/mainwindow.ui $(DISTDIR)/
 
@@ -1128,6 +1129,7 @@ main.o: ../copTest/main.cpp ../copTest/mainwindow.h \
 		/Users/new482/Qt/5.4/clang_64/lib/QtCore.framework/Versions/5/Headers/QXmlStreamReader \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QFileDialog \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qfiledialog.h \
+		../copTest/linklist.h \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QApplication \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../copTest/main.cpp
@@ -1411,6 +1413,7 @@ mainwindow.o: ../copTest/mainwindow.cpp ../copTest/mainwindow.h \
 		/Users/new482/Qt/5.4/clang_64/lib/QtCore.framework/Versions/5/Headers/QXmlStreamReader \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QFileDialog \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qfiledialog.h \
+		../copTest/linklist.h \
 		../copTest/myrectangle.h \
 		/Users/new482/Qt/5.4/clang_64/lib/QtCore.framework/Versions/5/Headers/QObject \
 		/Users/new482/Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QWidget \

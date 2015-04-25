@@ -114,10 +114,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        label->setText(QApplication::translate("MainWindow", "TextLabel", 0));
+        label->setText(QString());
         pushButton->setText(QApplication::translate("MainWindow", "Create rectangle", 0));
         pushButton_2->setText(QApplication::translate("MainWindow", "Change Color", 0));
-        xml_reader->setText(QApplication::translate("MainWindow", "PushButton", 0));
+        xml_reader->setText(QApplication::translate("MainWindow", "Load XML", 0));
         writeButton->setText(QApplication::translate("MainWindow", "Write XML", 0));
     } // retranslateUi
 

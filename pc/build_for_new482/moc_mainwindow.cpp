@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[15];
-    char stringdata[202];
+    QByteArrayData data[19];
+    char stringdata[211];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,17 +41,21 @@ QT_MOC_LITERAL(8, 111, 14), // "processProject"
 QT_MOC_LITERAL(9, 126, 17), // "processRectangles"
 QT_MOC_LITERAL(10, 144, 16), // "processRectangle"
 QT_MOC_LITERAL(11, 161, 13), // "drawRectangle"
-QT_MOC_LITERAL(12, 175, 1), // "x"
-QT_MOC_LITERAL(13, 177, 1), // "y"
-QT_MOC_LITERAL(14, 179, 22) // "on_writeButton_clicked"
+QT_MOC_LITERAL(12, 175, 2), // "id"
+QT_MOC_LITERAL(13, 178, 1), // "x"
+QT_MOC_LITERAL(14, 180, 1), // "y"
+QT_MOC_LITERAL(15, 182, 1), // "w"
+QT_MOC_LITERAL(16, 184, 1), // "h"
+QT_MOC_LITERAL(17, 186, 1), // "c"
+QT_MOC_LITERAL(18, 188, 22) // "on_writeButton_clicked"
 
     },
     "MainWindow\0on_pushButton_clicked\0\0"
     "on_pushButton_2_clicked\0mousePressEvent\0"
     "QMouseEvent*\0e\0on_xml_reader_clicked\0"
     "processProject\0processRectangles\0"
-    "processRectangle\0drawRectangle\0x\0y\0"
-    "on_writeButton_clicked"
+    "processRectangle\0drawRectangle\0id\0x\0"
+    "y\0w\0h\0c\0on_writeButton_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -76,8 +80,8 @@ static const uint qt_meta_data_MainWindow[] = {
        8,    0,   65,    2, 0x08 /* Private */,
        9,    0,   66,    2, 0x08 /* Private */,
       10,    0,   67,    2, 0x08 /* Private */,
-      11,    2,   68,    2, 0x08 /* Private */,
-      14,    0,   73,    2, 0x08 /* Private */,
+      11,    6,   68,    2, 0x08 /* Private */,
+      18,    0,   81,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -87,7 +91,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QReal, QMetaType::QReal,   12,   13,
+    QMetaType::Void, QMetaType::QReal, QMetaType::QReal, QMetaType::QReal, QMetaType::QReal, QMetaType::QReal, QMetaType::QString,   12,   13,   14,   15,   16,   17,
     QMetaType::Void,
 
        0        // eod
@@ -105,7 +109,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->processProject(); break;
         case 5: _t->processRectangles(); break;
         case 6: _t->processRectangle(); break;
-        case 7: _t->drawRectangle((*reinterpret_cast< qreal(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
+        case 7: _t->drawRectangle((*reinterpret_cast< qreal(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2])),(*reinterpret_cast< qreal(*)>(_a[3])),(*reinterpret_cast< qreal(*)>(_a[4])),(*reinterpret_cast< qreal(*)>(_a[5])),(*reinterpret_cast< QString(*)>(_a[6]))); break;
         case 8: _t->on_writeButton_clicked(); break;
         default: ;
         }
