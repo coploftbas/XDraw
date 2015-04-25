@@ -203,7 +203,7 @@ QString MainWindow::readNextText(){
     #endif
 }
 
-void MainWindow::drawRectangle(qreal x, qreal y)
+void MainWindow::drawRectangle(qreal x, qreal y,)
 {
     QBrush blueBrush(Qt::gray);
     QPen blackPen(Qt::black);
