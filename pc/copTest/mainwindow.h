@@ -13,6 +13,7 @@
 #include <QXmlStreamReader>
 #include <QFileDialog>
 #include <QObject>
+#include <list>
 
 /*
 #include "sshremoteprocess.h"
@@ -52,6 +53,8 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QGraphicsRectItem *rectangle;
+    std::list<QGraphicsRectItem *> listRec;
+    std::list<QGraphicsRectItem *>::iterator it;
     QPoint startPos;
     QPoint endPos;
     bool inDrawing;

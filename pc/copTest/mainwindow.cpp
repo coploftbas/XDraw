@@ -48,6 +48,10 @@ MainWindow::MainWindow(QWidget *parent) :
     qreal tmp_h = 0.001;
     qreal tmp_w = 0.0001;
     rectangle = scene->addRect(tmp_x,tmp_y,tmp_w,tmp_h,whitePen, whiteBrush);
+    /*listRec.push_back(rectangle);
+    for (it = listRec.begin(); it!=listRec.end();++it){
+        ui->label->setText("list["+QString::number((*it)->x())+"]:"+QString::number(rectangle->pos().x())+" pos:"+QString::number(rectangle->rect().width()));
+    }*/
     //end fixing bug
 
     posX=0;
@@ -88,6 +92,8 @@ void MainWindow::on_pushButton_clicked()
     rectangle = scene->addRect(posX, posY,myWidth,myHeight,blackPen, blueBrush);
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
 
+    listRec.push_back(rectangle);
+    ui->label->setText("x:"+QString::number(rectangle->pos().toPoint().x())+"  y:"+QString::number(rectangle->scenePos().y()));
     current->next = get_node();
     current = current->next;
     posX += 50;
@@ -107,6 +113,8 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
+    rec_count++;
+
     QColor color;
     color.setNamedColor("#"+default_color_brush);
     QBrush blueBrush(color);
@@ -117,7 +125,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     rectangle->setFlag(QGraphicsItem::ItemIsMovable);
     ui->label->setText("Click => x:"+QString::number(e->pos().x()) + "  y:"+QString::number(e->pos().y()));
 
-    rec_count++;
+    listRec.push_back(rectangle);
+
     current->id = rec_count;
     //current->label = "MyLabel";
     current->x = e->pos().x();
@@ -135,7 +144,7 @@ void MainWindow::on_xml_reader_clicked()
 {
     QString niwnew_read = "/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml";
     QString cop_read = "/Users/coploftbas/Documents/XDraw/sdqi.xml";
-    QFile xmlFile(niwnew_read);
+    QFile xmlFile(cop_read);
        xmlFile.open(QIODevice::ReadOnly);
        xml.setDevice(&xmlFile);
 
@@ -247,7 +256,7 @@ void MainWindow::on_writeButton_clicked()
 
     xmlWriter.writeStartElement("project");
     xmlWriter.writeStartElement("rectangles");
-    for(int i=0;i<rec_count;i++){
+    /*for(int i=0;i<rec_count;i++){
         xmlWriter.writeStartElement("rectangle");
             xmlWriter.writeTextElement("id",QString::number(current->id));
             xmlWriter.writeTextElement("label","Mylabel"+QString::number(current->id));
@@ -258,6 +267,24 @@ void MainWindow::on_writeButton_clicked()
             xmlWriter.writeTextElement("color","A4A4A4");
         xmlWriter.writeEndElement();
         current=current->next;
+    }*/
+    int tmp_id = 1;
+    for(it=listRec.begin();it!=listRec.end();++it){
+        xmlWriter.writeStartElement("rectangle");
+            xmlWriter.writeTextElement("id",QString::number(tmp_id));
+            xmlWriter.writeTextElement("label","Mylabel"+QString::number(tmp_id));
+            xmlWriter.writeTextElement("x",QString::number((*it)->x()));
+            xmlWriter.writeTextElement("y",QString::number((*it)->y()));
+            xmlWriter.writeTextElement("width",QString::number((*it)->rect().width()));
+            xmlWriter.writeTextElement("height",QString::number((*it)->rect().height()));
+            QString str;
+            QColor color = (*it)->brush().color();
+            str.append( QString::number( color.red(), 16 ).toUpper() )
+               .append( QString::number( color.green(), 16 ).toUpper() )
+               .append( QString::number( color.blue(), 16 ).toUpper() );
+            xmlWriter.writeTextElement("color",str);
+        xmlWriter.writeEndElement();
+        tmp_id++;
     }
     xmlWriter.writeEndElement();
     xmlWriter.writeEndElement();
@@ -275,11 +302,21 @@ void MainWindow::drawRectangle(qreal id, qreal x, qreal y, qreal w, qreal h, QSt
 
     if(id<=rec_count){
         //UPDATE OLD RECT
+        qreal count_loop = 1;
+        for(it=listRec.begin();it!=listRec.end();++it){
+            if(id==count_loop){
+                (*it)->setPos(x,y);
+                (*it)->setBrush(blueBrush);
+            }
+            count_loop++;
+        }
 
     }else{
         //DRAW NEW RECT
         rectangle = scene->addRect(x,y,w,h,blackPen,blueBrush);
         rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+
+        listRec.push_back(rectangle);
 
         rec_count++;
         current->id = rec_count;
