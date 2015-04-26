@@ -135,7 +135,7 @@ void MainWindow::on_xml_reader_clicked()
 {
     QString niwnew_read = "/Users/new482/Documents/sdqi_workspace/XDraw/sdqi.xml";
     QString cop_read = "/Users/coploftbas/Documents/XDraw/sdqi.xml";
-    QFile xmlFile(cop_read);
+    QFile xmlFile(niwnew_read);
        xmlFile.open(QIODevice::ReadOnly);
        xml.setDevice(&xmlFile);
 

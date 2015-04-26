@@ -28,6 +28,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +36,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -66,8 +69,15 @@ public class Main extends ActionBarActivity implements Constants {
     private boolean drawingMode = false;
     private boolean movingMode = false;
     private boolean changeColor = false;
-	private File gpxfile;
-	
+    private File gpxfile;
+    private File root;
+
+    private String fileName = "sdqi.xml";
+    private boolean statusServer = false;
+    private boolean isRead = false;
+    private String userName = "st116389";
+    private String password = "password";
+
     private FrameLayout.LayoutParams params;
     private int left, top, index;
     private float tmpX = 0, tmpY = 0, newX = 0, newY = 0;
@@ -80,40 +90,34 @@ public class Main extends ActionBarActivity implements Constants {
         setContentView(R.layout.activity_main);
         frame = (FrameLayout) findViewById(R.id.framelayout);
 
-        //Log.d("Create","O");
 
-        new AsyncTask<Integer, Void, Void>() {
+
+
+        // Set file object
+
+        File root = new File(getFilesDir().getAbsolutePath(), fileName);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+        gpxfile = new File(root, fileName);
+
+        load(); // Load data from server
+
+        // Set reload every 10 second
+        Timer timer = new Timer();
+        TimerTask loadTask = new TimerTask() {
             @Override
-            protected Void doInBackground(Integer... params) {
-                try {
-
-                   // Log.d("Info return", ReadFile("st116389", "password", "bazooka.cs.ait.ac.th", 22));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
+            public void run() {
+                load();
             }
-        }.execute(1);
-
-        new AsyncTask<Integer, Void, Void>() {
-            @Override
-            protected Void doInBackground(Integer... params) {
-                try {
-
-
-                   // Log.d("Info return", WriteFile("st116389", "password", "bazooka.cs.ait.ac.th", 22));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute(1);
+        };
+        timer.scheduleAtFixedRate(loadTask, 0, 10000);
 
     }
 
 
     Rectangle rectangle;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Calculate the fucking size of the bar - There is certainly a way for passing this
@@ -122,8 +126,8 @@ public class Main extends ActionBarActivity implements Constants {
         int correctionTMP = 236; //Changement inComming, why 236 ? (31) for the picture, (contentView) status bar
         mx = event.getX();
         my = event.getY() - contentViewTop - correctionTMP; //TODO There is an error there, the my has to be zero on the left corner. The only way to do this is to minus this value by 236, but why 236 ?
-        Log.d("Tourh Event",String.valueOf(my));
-        Log.d("Tourh Event",String.valueOf(contentViewTop));
+        // Log.d("Tourh Event",String.valueOf(my));
+        // Log.d("Tourh Event",String.valueOf(contentViewTop));
         /*if (!drawingMode && !movingMode) {
             if (!inside(mx, my)) {
                 Toast.makeText(Main.this, "inside", Toast.LENGTH_LONG).show();
@@ -138,11 +142,11 @@ public class Main extends ActionBarActivity implements Constants {
         } else*/
 
         if (inside(mx, my)) {
-           // Toast.makeText(Main.this, "inside", Toast.LENGTH_LONG).show();
-            Log.d("Tourh Event","inside");
+            // Toast.makeText(Main.this, "inside", Toast.LENGTH_LONG).show();
+            //  Log.d("Tourh Event","inside");
 
             //rectangle = new Rectangle(this);
-            if(changeColor == true){
+            if (changeColor == true) {
                 onTouchEventChangeColor(event);
                 changeColor = false;
             }
@@ -150,11 +154,11 @@ public class Main extends ActionBarActivity implements Constants {
         }
 
         if (movingMode) {
-          onTouchEventMoveRectangle(event);
-           // Log.d("Touch event", "Moving");
+            onTouchEventMoveRectangle(event);
+            // Log.d("Touch event", "Moving");
         } else {
-           // Toast.makeText(Main.this, "else", Toast.LENGTH_LONG).show();
-            Log.d("Touch Event","else");
+            // Toast.makeText(Main.this, "else", Toast.LENGTH_LONG).show();
+            //    Log.d("Touch Event","else");
 
 //            throw new IllegalArgumentException("Impossible");
         }
@@ -195,13 +199,13 @@ public class Main extends ActionBarActivity implements Constants {
                 left = params.leftMargin;
                 top = params.topMargin;
 
-                Log.d("Change color","Start to change color");
+                // Log.d("Change color","Start to change color");
                 listRectangle.get(index).changeColor(currentColor);
 
                 break;
 
             case MotionEvent.ACTION_UP:
-               // movingMode = false;
+                // movingMode = false;
                 break;
         }
 
@@ -274,18 +278,20 @@ public class Main extends ActionBarActivity implements Constants {
         }
         return true;
     }
-	
+
     public void saveData(View view) throws ParserConfigurationException, TransformerException, SAXException, IOException {
+
         writeXML();
+        transfer();
     }
 
     public void writeXML() throws ParserConfigurationException, IOException, SAXException, TransformerException {
-        Log.d("Change color",getFilesDir().getAbsolutePath());
-        File root = new File(getFilesDir().getAbsolutePath(), "sdqi.xml");
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-        gpxfile = new File(root, "sdqi.xml");
+       // Log.d("Change color",getFilesDir().getAbsolutePath());
+       // File root = new File(getFilesDir().getAbsolutePath(), "sdqi.xml");
+      //  if (!root.exists()) {
+       //     root.mkdirs();
+      //  }
+      //  gpxfile = new File(root, "sdqi.xml");
         FileWriter writer = new FileWriter(gpxfile);
         writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                 "<project>\n" +
@@ -348,7 +354,8 @@ public class Main extends ActionBarActivity implements Constants {
     }
 
     public void readData(View view) throws ParserConfigurationException, TransformerException, SAXException, IOException, XmlPullParserException {
-        readXML();
+        //readXML();
+        load();
     }
 
     public void readXML() throws XmlPullParserException, IOException {
@@ -366,6 +373,8 @@ public class Main extends ActionBarActivity implements Constants {
         String currentTag = null;
         float posX=0;
         float posY=0;
+        String color="" ;
+
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
                 currentTag = xpp.getName();
@@ -376,20 +385,31 @@ public class Main extends ActionBarActivity implements Constants {
                 if ("y".equals(currentTag)) {
                     posY = (Float.valueOf(xpp.getText())).floatValue();
                 }
+                if ("color".equals(currentTag)) {
+                    color = xpp.getText();
+                }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if ("rectangle".equals(xpp.getName())) {
-                    drawRectangle(posX,posY);
+                    drawRectangleWithColor(posX, posY, color);
                 }
             }
             eventType = xpp.next();
         }
     }
-	
+
     /**
      * Drawing a simple rectangle if this one follow some principle
      */
     private void drawRectangle(float posX,float posY) {
         Rectangle tmp = new Rectangle(this, posX+0, posY+0, posX+SIZE_MAX_X_RECTANGLE, posY+SIZE_MAX_Y_RECTANGLE);
+        listRectangle.add(tmp);
+        frame.addView(tmp, idFrame);
+        idFrame++;
+    }
+
+    private void drawRectangleWithColor(float posX,float posY,String color) {
+        Rectangle tmp = new Rectangle(this, posX+0, posY+0, posX+SIZE_MAX_X_RECTANGLE, posY+SIZE_MAX_Y_RECTANGLE);
+        tmp.setColor(color);
         listRectangle.add(tmp);
         frame.addView(tmp, idFrame);
         idFrame++;
@@ -411,7 +431,7 @@ public class Main extends ActionBarActivity implements Constants {
         return false;
     }
 
-    public void createRectangle(View view)  throws ParserConfigurationException, TransformerException, SAXException, IOException {
+    public void createRectangle(View view) throws ParserConfigurationException, TransformerException, SAXException, IOException {
         //writeXML(0,0); TODO Create a SD Card
         Rectangle tmp = new Rectangle(this, 0, 0, SIZE_MAX_X_RECTANGLE, SIZE_MAX_Y_RECTANGLE);
         listRectangle.add(tmp);
@@ -425,10 +445,28 @@ public class Main extends ActionBarActivity implements Constants {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    public void paintClicked(View view){
-        Log.d("test", view.getTag().toString());
+
+    public void paintClicked(View view) {
+        // Log.d("test", view.getTag().toString());
         currentColor = view.getTag().toString();
         changeColor = true;
+    }
+
+    private void transfer() {
+
+        Log.d("Info", "Transferring file");
+
+        new AsyncTask<Integer, Void, Void>() {
+            @Override
+            protected Void doInBackground(Integer... params) {
+                try {
+                    Log.d("Info return", WriteFile(userName, password, "bazooka.cs.ait.ac.th", 22));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(1);
     }
 
     public String WriteFile(String username, String password, String hostname, int port)
@@ -450,57 +488,43 @@ public class Main extends ActionBarActivity implements Constants {
         //Log.d("AbsolutePath", getFilesDir().getAbsolutePath());
 
 
-        String path = getFilesDir().getAbsolutePath();
+        if (session.isConnected()) {
 
-        String localPath = path + "/trying.xml";
+           // Log.d("Info", "Start to transfer");
+            // String path = getFilesDir().getAbsolutePath();
 
+            // String localPath = path + "/" + fileName;
 
-        writeFileToServer(session,localPath,"trying_999.xml");
+            // File f = new File(getFilesDir().getAbsolutePath(),fileName);
+
+            if (gpxfile.exists() && !gpxfile.isDirectory()) // Check file isExit
+            {
+               // Log.d("Info", "Path file is ok.");
+                writeFileToServer(session, gpxfile.getAbsolutePath(), fileName);
+
+            } else {
+                writeXML();
+                writeFileToServer(session, gpxfile.getAbsolutePath(), fileName);
+            }
+
+        } else {
+            // When no connection fail
+            return "Cannot connect to server";
+        }
 
         session.disconnect();
 
         return "Finish Writing";
     }
 
-
-    public String ReadFile(String username, String password, String hostname, int port)
-            throws Exception {
-        JSch jsch = new JSch();
-        Session session = jsch.getSession(username, hostname, port);
-        session.setPassword(password);
-
-        // Avoid asking for key confirmation
-        Properties prop = new Properties();
-        prop.put("StrictHostKeyChecking", "no");
-        session.setConfig(prop);
-
-        session.connect();
-
-        // Log.d("Info Path : ", getResources().getString(R.xml.trying));
-
-
-        //Log.d("AbsolutePath", getFilesDir().getAbsolutePath());
-
-
-        String path = getFilesDir().getAbsolutePath();
-
-        String localPath = path + "/trying.xml";
-
-        readFileFromServer(session, localPath,"trying.xml" );
-        session.disconnect();
-
-        return "Finish reading";
-    }
-
-
-    private void writeFileToServer(Session session,String localFile, String remoteFile) {
+    private void writeFileToServer(Session session, String localFile, String remoteFile) {
         FileInputStream fis = null;
         try {
 
             // InputStream ins = getResources().openRawResource(R.xml.trying);
 
             String lfile = localFile; //getResources().getString(R.xml.trying); // localhost file path
-            String rfile = remoteFile ;// remote file path
+            String rfile = remoteFile;// remote file path
 
 
             boolean ptimestamp = false;
@@ -517,6 +541,8 @@ public class Main extends ActionBarActivity implements Constants {
             channel.connect();
 
             if (checkAck(in) != 0) {
+                //  Log.d("Error", "----");
+                // throw new Exception();
                 System.exit(0);
             }
 
@@ -532,6 +558,8 @@ public class Main extends ActionBarActivity implements Constants {
                 out.write(command.getBytes());
                 out.flush();
                 if (checkAck(in) != 0) {
+                    //  Log.d("Error", "----");
+                    // throw new Exception();
                     System.exit(0);
                 }
             }
@@ -548,6 +576,8 @@ public class Main extends ActionBarActivity implements Constants {
             out.write(command.getBytes());
             out.flush();
             if (checkAck(in) != 0) {
+                //Log.d("Error", "----");
+                // throw new Exception();
                 System.exit(0);
             }
 
@@ -569,7 +599,9 @@ public class Main extends ActionBarActivity implements Constants {
             out.write(buf, 0, 1);
             out.flush();
             if (checkAck(in) != 0) {
-                System.exit(0);
+                Log.d("Error", "----");
+                throw new Exception();
+                //System.exit(0);
             }
             out.close();
 
@@ -577,9 +609,9 @@ public class Main extends ActionBarActivity implements Constants {
             channel.disconnect();
 
             //  session.disconnect();
-            Log.d("Info: " ,"Writing file is finished");
+            Log.d("Info: ", "Writing file is finished");
 
-            System.exit(0);
+            //System.exit(0);
         } catch (Exception e) {
             System.out.println(e);
             try {
@@ -589,7 +621,90 @@ public class Main extends ActionBarActivity implements Constants {
         }
     }
 
-    private void readFileFromServer(Session session,String localFile,String remoteFile) {
+
+    private void load() {
+
+
+        new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                try {
+
+                    Log.d("Info return", ReadFile(userName, password, "bazooka.cs.ait.ac.th", 22));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String in) {
+                try {
+                    if (isRead) {
+                        // #replace
+                        readXML();
+
+                    } else {
+                        // #Tranfer
+                        writeXML();
+                        transfer();
+                    }
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                } catch (SAXException e) {
+                    e.printStackTrace();
+                } catch (TransformerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute("1");
+
+
+    }
+
+    public String ReadFile(String username, String password, String hostname, int port)
+            throws Exception {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(username, hostname, port);
+        session.setPassword(password);
+
+        // Avoid asking for key confirmation
+        Properties prop = new Properties();
+        prop.put("StrictHostKeyChecking", "no");
+        session.setConfig(prop);
+
+        session.connect();
+
+        if (session.isConnected()) { // Check connection
+
+            // String path = getFilesDir().getAbsolutePath();
+
+            // String localPath = path + "/"+ fileName;
+
+             isRead = readFileFromServer(session, gpxfile.getAbsolutePath(), fileName);
+
+            session.disconnect();
+
+            return "Finish reading";
+
+        } else {
+            // When connection fail
+            return "Cannot connect to server";
+        }
+
+        // Log.d("Info Path : ", getResources().getString(R.xml.trying));
+
+
+        //Log.d("AbsolutePath", getFilesDir().getAbsolutePath());
+    }
+
+    private boolean readFileFromServer(Session session, String localFile, String remoteFile) {
 
         FileOutputStream fos = null;
         try {
@@ -628,6 +743,7 @@ public class Main extends ActionBarActivity implements Constants {
                 while (true) {
                     if (in.read(buf, 0, 1) < 0) {
                         // error
+                        // throw new Exception();
                         break;
                     }
                     if (buf[0] == ' ') break;
@@ -645,48 +761,50 @@ public class Main extends ActionBarActivity implements Constants {
 
                 Log.d("Info read file from server", "filesize=" + filesize + ", file=" + file);
 
-                // send '\0'
-                buf[0] = 0;
-                out.write(buf, 0, 1);
-                out.flush();
+               // Log.d("Info", file);
+               // Log.d("Info", fileName);
 
+                if (fileName.equals(file.toString())) { // Check file name
 
+                    // send '\0'
+                    buf[0] = 0;
+                    out.write(buf, 0, 1);
+                    out.flush();
 
-                // String path = getFilesDir().getAbsolutePath();
+                    fos = new FileOutputStream(new File(lfile));
 
-                // String localPath = path + "/POP.xml";
-
-                // Log.d("PATH 1:" ,localPath) ;
-                // Log.d("PATH:" ,path + "/POP.xml") ;
-
-                fos =  new FileOutputStream (new File(lfile));
-
-                //fos = openFileOutput("Test.xml", MODE_PRIVATE);
-
-                int foo;
-                while (true) {
-                    if (buf.length < filesize) foo = buf.length;
-                    else foo = (int) filesize;
-                    foo = in.read(buf, 0, foo);
-                    if (foo < 0) {
-                        // error
-                        break;
+                    int foo;
+                    while (true) {
+                        if (buf.length < filesize) foo = buf.length;
+                        else foo = (int) filesize;
+                        foo = in.read(buf, 0, foo);
+                        if (foo < 0) {
+                            // error
+                            break;
+                        }
+                        fos.write(buf, 0, foo);
+                        filesize -= foo;
+                        if (filesize == 0L) break;
                     }
-                    fos.write(buf, 0, foo);
-                    filesize -= foo;
-                    if (filesize == 0L) break;
-                }
-                fos.close();
-                fos = null;
+                    fos.close();
+                    fos = null;
 
-                if (checkAck(in) != 0) {
-                    System.exit(0);
-                }
+                    if (checkAck(in) != 0) {
+                        //Log.d("Error", "File name is wrong or no file on server");
+                        //throw new Exception();
+                        System.exit(0);
+                    }
 
-                // send '\0'
-                buf[0] = 0;
-                out.write(buf, 0, 1);
-                out.flush();
+                    // send '\0'
+                    buf[0] = 0;
+                    out.write(buf, 0, 1);
+                    out.flush();
+
+                } else {
+
+                    Log.d("Error", "File name is wrong or no file on server");
+                    return false;
+                }
             }
 
             out.close();
@@ -694,16 +812,20 @@ public class Main extends ActionBarActivity implements Constants {
             fos.close();
             //  session.disconnect();
 
-            System.exit(0);
+            // System.exit(0);
+
         } catch (Exception e) {
             System.out.println(e);
             try {
-                if (fos != null) fos.close();
+                if (fos != null)
+                    fos.close();
+                // return false;
             } catch (Exception ee) {
             }
         }
-    }
 
+        return true;
+    }
 
     static int checkAck(InputStream in) throws IOException {
         int b = in.read();
