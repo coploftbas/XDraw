@@ -49,10 +49,14 @@ public class Rectangle extends View {
     public String getColor() {
         return color;
     }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 	
     @Override
     public void onDraw(Canvas canvas) {
-        Log.d("Canvas", "!!!!");
+        //Log.d("Canvas", "!!!!");
         mPaintFinal = new Paint(Paint.DITHER_FLAG);
       //  mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
 

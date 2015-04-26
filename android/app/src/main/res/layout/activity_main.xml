@@ -36,7 +36,7 @@
                 android:contentDescription="@string/start_new"
                 android:layout_gravity="center"
                 android:onClick="saveData"
-                android:src="@drawable/new_pic" />
+                android:src="@drawable/save" />
 
             <ImageButton
                 android:id="@+id/new_btn3"
@@ -45,7 +45,7 @@
                 android:contentDescription="@string/start_new"
                 android:layout_gravity="center"
                 android:onClick="readData"
-                android:src="@drawable/new_pic" />
+                android:src="@drawable/load" />
     </LinearLayout>
         <!--        <Button
                     android:layout_height="@dimen/button_create_rectangle"
