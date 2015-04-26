@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
       my_ssh_session = ssh_new();
       if (my_ssh_session == NULL)
         exit(-1);
-      ssh_options_set(my_ssh_session, SSH_OPTIONS_HOST, "ฝฝฝฝฝ");
+      ssh_options_set(my_ssh_session, SSH_OPTIONS_HOST, "ฝฝฝฝฝฝ");
       // Connect to server
       rc = ssh_connect(my_ssh_session);
       if (rc != SSH_OK)
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
       // Authenticate ourselves
       //password = getpass("Password: ");
-      rc = ssh_userauth_password(my_ssh_session, NULL, "ฝฝฝฝฝ");
+    rc = ssh_userauth_password(my_ssh_session, NULL, "ฝฝฝฝฝฝ");
       if (rc != SSH_AUTH_SUCCESS)
       {
         fprintf(stderr, "Error authenticating with password: %s\n",
