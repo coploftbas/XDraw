@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-
+/*
     ssh_session my_ssh_session;
       int rc;
      // char *password;
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
       // Authenticate ourselves
       //password = getpass("Password: ");
-      rc = ssh_userauth_password(my_ssh_session, NULL, "ฝฝฝฝฝ");
+/*      rc = ssh_userauth_password(my_ssh_session, NULL, "ฝฝฝฝฝ");
       if (rc != SSH_AUTH_SUCCESS)
       {
         fprintf(stderr, "Error authenticating with password: %s\n",
